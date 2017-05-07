@@ -9,14 +9,15 @@ $error=''; // error message
 $success=''; // success message
 $errorNoMessages='';
 $email = $_SESSION['login_user'];
+$id = $_SESSION['login_id'];
 
-$sql = "SELECT * FROM users WHERE userEmail = '$email'";
+$sql = "SELECT * FROM users WHERE userId = '$id'";
 $result = mysqli_query($mysqli,$sql);
 $profile_result = mysqli_fetch_assoc($result);
 
 $userid = $profile_result["userId"];
 $sql = "SELECT * FROM messages WHERE userRxId = '$userid' || userTxId = '$userid' ORDER BY messageDate DESC";
-$result_messages = mysqli_query($mysqli,$sql);
+$result = mysqli_query($mysqli,$sql);
 ?>
 <!doctype html>
 <html>
@@ -45,8 +46,8 @@ $result_messages = mysqli_query($mysqli,$sql);
             <ul>
                 <li><a href="profile_information.php" style="color:black;">Profile </a></li>
                 <li><a href="search.php">Search</a></li>
-                <li><a href="#">Configuration</a></li>
-                <li><a href="#">Help</a></li>
+                <li><a href="configuration.php">Configuration</a></li>
+                <li><a href="help.php">Help</a></li>
                 <li><a href="includes/logout.php">Close session</a></li>
             </ul>
         </nav>
@@ -68,24 +69,24 @@ $result_messages = mysqli_query($mysqli,$sql);
         </ul>
         <div class="tab-content" style="background-color: white; margin: 20px">
             <?php
-              if(mysqli_num_rows($result_messages) > 0){
-                while($row = mysqli_fetch_assoc($result_messages)){
-                  $date = date_format(date_create($row["messageDate"]),"d/m/Y");
-                  echo '<div data-from='.$row["userTxId"].' data-from-name='.$row["userTxName"].' data-to='.$row["userRxId"].' data-to-name='.$row["userRxName"].' style="max-width:600px;">';
-                  if($row['userTxId'] == $_SESSION['login_id']){
-                        echo '<p><strong>From:</strong> '.$row["userTxName"].'</p>
-                        <p><strong>To:</strong> <a class="link" href="profile_user.php?id='.$row["userRxId"].'" data-link-id='.$row["userRxId"].'>'.$row["userRxName"].'</a></p>';
+              if(mysqli_num_rows($result) > 0){
+                while($messages_result = mysqli_fetch_assoc($result)){
+                  $date = date_format(date_create($messages_result["messageDate"]),"d/m/Y");
+                  echo '<div style="max-width:600px;">';
+                  if($messages_result['userTxId'] == $_SESSION['login_id']){
+                        echo '<p><strong>From:</strong> '.$messages_result["userTxName"].'</p>
+                        <p><strong>To:</strong> <a class="link" href="profile_user.php?id='.$messages_result["userRxId"].'">'.$messages_result["userRxName"].'</a></p>';
                   }
                   else{
-                        echo '<p><strong>From:</strong> <a class="link" href="profile_user.php?id='.$row["userTxId"].'"> '.$row["userTxName"].'</a></p>
-                        <p><strong>To:</strong> '.$row["userRxName"].'</p>';                  
+                        echo '<p><strong>From:</strong> <a class="link" href="profile_user.php?id='.$messages_result["userTxId"].'"> '.$messages_result["userTxName"].'</a></p>
+                        <p><strong>To:</strong> '.$messages_result["userRxName"].'</p>';                  
                   }
                   echo'
                         <p><strong>Date:</strong> '.$date.'</p>
-                        <p><strong>Title:</strong> '.$row["messageTitle"].'</p>
-                        <textarea readonly="readonly" rows="5" cols="50" style="width:600px;">'.$row["messageText"].'</textarea>';
-                  if($row['userTxId'] != $_SESSION['login_id']){
-                    echo '<a class="link link-answer" href="message.php" align="right">Answer</a>';
+                        <p><strong>Title:</strong> '.$messages_result["messageTitle"].'</p>
+                        <textarea readonly="readonly" class="blocked" rows="5" cols="50" style="width:600px;">'.$messages_result["messageText"].'</textarea>';
+                  if($messages_result['userTxId'] != $_SESSION['login_id']){
+                    echo '<a class="link link-answer" href="message.php?id='.$messages_result['userTxId'].'" align="right">Answer</a>';
                   }
                     echo'</div><hr>';
                 }
@@ -98,14 +99,6 @@ $result_messages = mysqli_query($mysqli,$sql);
     </main>
     <script type="text/javascript">
       var navigation = $('#nav-main').okayNav();
-      window.onload = function() {
-        $(document).on('click', '.link-answer', function () {
-          sessionStorage.setItem('RxName', $(this).parent().attr('data-to-name'));
-          sessionStorage.setItem('TxName', $(this).parent().attr('data-from-name'));
-          sessionStorage.setItem('RxId', $(this).parent().attr('data-to'));
-          sessionStorage.setItem('TxId', $(this).parent().attr('data-from'));
-        });
-      }
     </script>
     <script>
     </script>

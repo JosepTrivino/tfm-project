@@ -9,6 +9,7 @@ $error=''; // error message
 $errorUpload=''; // error message
 $success=''; // success message
 $email = $_SESSION['login_user'];
+$id = $_SESSION['login_id'];
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
   $name=validate_parameter($mysqli,$_POST['name']);
@@ -41,7 +42,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
       $errorUpload = "Sorry, your image was not uploaded.";
     } else {
       if (move_uploaded_file($_FILES["imageupload"]["tmp_name"], $target_file)) {
-        $sql = "UPDATE users SET userImage='$target_file' WHERE userEmail='$email'";
+        $sql = "UPDATE users SET userImage='$target_file' WHERE userId='$id'";
         $result = mysqli_query ($mysqli, $sql);
       } else {
         $errorUpload = "Sorry, there was an error uploading your file.";
@@ -49,7 +50,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     }
   }
 
-  $sql = "UPDATE users SET userName='$name', userLastName='$lastname', userDBirth=STR_TO_DATE('$dateofbirth', '%d/%m/%Y'), userGender='$gender', userCountry='$country', userCity='$city', userDescription='$information' WHERE userEmail='$email'";
+  $sql = "UPDATE users SET userName='$name', userLastName='$lastname', userDBirth=STR_TO_DATE('$dateofbirth', '%d/%m/%Y'), userGender='$gender', userCountry='$country', userCity='$city', userDescription='$information' WHERE userId='$id'";
   $result = mysqli_query ($mysqli, $sql);
   if($result) {
     $success = "The information has been updated";
@@ -59,11 +60,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
   }
 }
 
-$sql = "SELECT * FROM users WHERE userEmail = '$email'";
+$sql = "SELECT * FROM users WHERE userId = '$id'";
 $result = mysqli_query($mysqli,$sql);
 $profile_result = mysqli_fetch_assoc($result);
-
-
 ?>
 <!doctype html>
 <html>
@@ -91,8 +90,8 @@ $profile_result = mysqli_fetch_assoc($result);
             <ul>
                 <li><a href="profile_information.php" style="color:black;">Profile </a></li>
                 <li><a href="search.php">Search</a></li>
-                <li><a href="#">Configuration</a></li>
-                <li><a href="#">Help</a></li>
+                <li><a href="configuration.php">Configuration</a></li>
+                <li><a href="help.php">Help</a></li>
                 <li><a href="includes/logout.php">Close session</a></li>
             </ul>
         </nav>
@@ -132,7 +131,7 @@ $profile_result = mysqli_fetch_assoc($result);
                 </div>
                 <div class="item-profile-right">
                   <label for="email">Email</label>
-                  <?php echo '<input readonly="readonly" style="color:gray" type="email" name="email" value='.$profile_result["userEmail"].'>'; ?>
+                  <?php echo '<input readonly="readonly" class="blocked" type="email" name="email" value='.$profile_result["userEmail"].'>'; ?>
                 </div>
                 <br style="clear:both;" />
               </section>
@@ -175,7 +174,7 @@ $profile_result = mysqli_fetch_assoc($result);
                 <div class="item-profile">
                   <label for="imageupload" >Upload image</label>
                   <input type="file" name="imageupload" id="imageupload">
-                  <div class="control-group error"><?php echo $errorUpload; ?></div>
+                  <div class="error"><?php echo $errorUpload; ?></div>
                 </div>
                 <br style="clear:both;" />
               </section>

@@ -6,6 +6,18 @@ include('includes/functions.php');
 
 $error=''; // error message
 
+$email = $_SESSION['login_user'];
+$id = $_SESSION['login_id'];
+$userId = $_GET["id"];
+
+$sql = "SELECT * FROM users WHERE userId = '$userId'";
+$result = mysqli_query($mysqli,$sql);
+$user_result = mysqli_fetch_assoc($result);
+
+$sql = "SELECT * FROM users WHERE userId = '$id'";
+$result = mysqli_query($mysqli,$sql);
+$profile_result = mysqli_fetch_assoc($result); 
+
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     $rxId=validate_parameter($mysqli,$_POST['userRxId']);
     $txId=validate_parameter($mysqli,$_POST['userTxId']);
@@ -56,8 +68,8 @@ else{
             <ul>
                 <li><a href="profile_information.php">Profile</a></li>
                 <li><a href="search.php">Search</a></li>
-                <li><a href="#">Configuration</a></li>
-                <li><a href="#">Help</a></li>
+                <li><a href="configuration.php">Configuration</a></li>
+                <li><a href="help.php">Help</a></li>
                 <li><a href="includes/logout.php">Close session</a></li>
             </ul>
         </nav>
@@ -70,12 +82,14 @@ else{
                         <h1 style="text-align: center">New message</h1>
                     </div>
                     <div class="control-group">
-                        <p id=TxName><strong>From: </strong></p>
-                        <p id=RxName><strong>To: </strong></p>
-                        <input type="hidden" name="userRxId" id="userRxId" />
-                        <input type="hidden" name="userTxId" id="userTxId" />
-                        <input type="hidden" name="userRxName" id="userRxName" />
-                        <input type="hidden" name="userTxName" id="userTxName" />
+                        <?php
+                            echo '<p ><strong>From:</strong> '.$profile_result["userName"].' '.$profile_result["userLastName"].'</p>';
+                            echo '<p><strong>To:</strong> <a href="profile_user.php?id='.$user_result["userId"].'" class="link"> '.$user_result["userName"].' '.$user_result["userLastName"].'</a></p>';
+                            echo '<input type="hidden" name="userRxId" value="'.$user_result["userId"].'"/>';
+                            echo '<input type="hidden" name="userTxId" id="userTxId" value="'.$profile_result["userId"].'"/>';
+                            echo '<input type="hidden" name="userRxName" id="userRxName" value="'.$user_result["userName"].' '.$user_result["userLastName"].'"/>';
+                            echo '<input type="hidden" name="userTxName" id="userTxName" value="'.$profile_result["userName"].' '.$profile_result["userLastName"].'"/>';
+                        ?>
                     </div>
                     <div class="control-group">
                         <p><strong>Title:</strong></p>
@@ -96,14 +110,6 @@ else{
     </main>
     <script type="text/javascript">
         var navigation = $('#nav-main').okayNav();
-        window.onload = function() {
-            $('#TxName').append( sessionStorage.getItem('TxName'));
-            $('#RxName').append( sessionStorage.getItem('RxName'));
-            $('#userTxId').val(sessionStorage.getItem('TxId'));
-            $('#userRxId').val(sessionStorage.getItem('RxId'));
-            $('#userTxName').val(sessionStorage.getItem('TxName'));
-            $('#userRxName').val(sessionStorage.getItem('RxName'));
-        }
     </script>
 </body>
 </html>

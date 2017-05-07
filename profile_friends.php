@@ -6,11 +6,11 @@ include('includes/variables.php');
 include('includes/functions.php');
 
 $email = $_SESSION['login_user'];
+$id = $_SESSION['login_id'];
 
-$sql = "SELECT * FROM users WHERE userEmail = '$email'";
+$sql = "SELECT * FROM users WHERE userId = '$id'";
 $result = mysqli_query($mysqli,$sql);
 $profile_result = mysqli_fetch_assoc($result);
-$profile_result['userFriends'] = "2,3";
 ?>
 
 <!doctype html>
@@ -41,8 +41,8 @@ $profile_result['userFriends'] = "2,3";
             <ul>
                 <li><a href="profile_information.php" style="color:black;">Profile </a></li>
                 <li><a href="search.php">Search</a></li>
-                <li><a href="#">Configuration</a></li>
-                <li><a href="#">Help</a></li>
+                <li><a href="configuration.php">Configuration</a></li>
+                <li><a href="help.php">Help</a></li>
                 <li><a href="includes/logout.php">Close session</a></li>
             </ul>
         </nav>
@@ -62,21 +62,21 @@ $profile_result['userFriends'] = "2,3";
         <li><a data-toggle="tab" href="#opinions">Opinions</a></li>
         <li><a data-toggle="tab" href="#visits">Visits</a></li>
       </ul>
-      <div class="tab-content" style="background-color: white; margin-left: 20px; margin-right: 20px;">
+      <div class="tab-content" style="background-color: white; margin: 20px">
         <?php
-          if ($profile_result['userFriends'] != ''){
+          if ($profile_result['userFriends'] != ','){
             $friends_array = explode(',', $profile_result['userFriends']);
             echo '<div id="container-friends">';
             foreach($friends_array as $friends){
-              $sql_friend = "SELECT userName, userLastName, userImage FROM users WHERE userId = '$friends'";
-              $result_friend = mysqli_query($mysqli,$sql_friend);
-              if(mysqli_num_rows($result_friend) > 0){
-                $result_friend = mysqli_fetch_assoc($result_friend);
+              $sql_friend = "SELECT userId, userName, userLastName, userImage FROM users WHERE userId = '$friends'";
+              $friends_result = mysqli_query($mysqli,$sql_friend);
+              if(mysqli_num_rows($friends_result) > 0){
+                $friends_result = mysqli_fetch_assoc($friends_result);
                 echo'
-                <a href="#">
+                <a href="profile_user.php?id='.$friends_result["userId"].'" class="link">
                     <figure>
-                        <img src="'.$result_friend["userImage"].'" alt="Profile Image"  height="70" width="70" class="profile-image">
-                        <figcaption class="link">'.$result_friend["userName"].' '.$result_friend["userLastName"].'</figcaption>
+                        <img src="'.$friends_result["userImage"].'" alt="Profile Image"  height="70" width="70" class="profile-image">
+                        <figcaption >'.$friends_result["userName"].' '.$friends_result["userLastName"].'</figcaption>
                     </figure>
                 </a>';
               }

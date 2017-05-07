@@ -58,7 +58,7 @@
         <button class="btn" type="Submit">LOGIN</button><br/>
       </form>
       <a class="link link-login" href="signin.php" align="middle">Create a new user</a>
-      <a class="link link-login" href="signin.html" align="right">Help</a>
+      <a class="link link-login" href="help.php" align="right">Help</a>
     </div>
   </div>
 </body>

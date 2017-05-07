@@ -35,7 +35,7 @@ main {
   color: #555;
   font-size: 16px;
   font-weight: bold;
-  line-height: 25px;
+  line-height: normal;
   padding: 6px 12px;
   text-decoration: none;
   text-shadow: none;
@@ -113,6 +113,6 @@ select:focus, input:focus, textarea:focusx {
   margin-right: 20px;
 }
 
-figcaption.link-friends:hover { 
-    color: #555;
+.blocked {
+  background-color: white;
 }

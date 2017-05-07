@@ -1,8 +1,9 @@
 input, label, button{
-	display:block;
+	display: block;
 	max-width: 200px;
 	width: 100%;
  }
+
  input[type="file"]{
  	max-width: 600px;
  	width: 100%
@@ -46,3 +47,11 @@ figure {
   display: block;
   text-align: center;
 }
+
+.btn-user{
+	display: inline-block;
+	margin-left: 20px;
+	margin-bottom: 10px;
+	max-height: 30px;
+	padding: 0px 12px;
+ }

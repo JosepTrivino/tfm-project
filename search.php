@@ -30,8 +30,8 @@ require( 'includes/headers.php' );
             <ul>
                 <li><a href="profile_information.php">Profile</a></li>
                 <li><a href="search.php" style="color:black;">Search</a></li>
-                <li><a href="#">Configuration</a></li>
-                <li><a href="#">Help</a></li>
+                <li><a href="configuration.php">Configuration</a></li>
+                <li><a href="help.php">Help</a></li>
                 <li><a href="includes/logout.php">Close session</a></li>
             </ul>
         </nav>
@@ -62,7 +62,6 @@ require( 'includes/headers.php' );
                 </form>
             </div>
         </div>
-    </div>
     </main>
     <script type="text/javascript">
         var navigation = $('#nav-main').okayNav();

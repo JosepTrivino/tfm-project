@@ -18,10 +18,13 @@
     $count = mysqli_num_rows($result);
     $result_fetch = mysqli_fetch_assoc($result);
     if($count == 0) { 
-      $sql = "INSERT INTO users (userEmail,userPass,userName,userLastName,userDBirth,userGender,userImage) VALUES ('$email','$password','$name','$lastname', STR_TO_DATE('$dateofbirth', '%d/%m/%Y'),'$gender','images/profile')";
+      $sql = "INSERT INTO users (userEmail,userPass,userName,userLastName,userDBirth,userGender,userImage,userFriends) VALUES ('$email','".md5($password)."','$name','$lastname', STR_TO_DATE('$dateofbirth', '%d/%m/%Y'),'$gender','images/profile',',')";
       $result = mysqli_query ($mysqli, $sql);
       if($result) {
         session_start();
+        $sql = "SELECT userId FROM users WHERE userEmail = '$email'";
+        $result = mysqli_query($mysqli,$sql);
+        $result_fetch = mysqli_fetch_assoc($result);
         $_SESSION['login_user'] = $email;
         $_SESSION['login_id'] = $result_fetch["userId"];
         header("location: search.php");
@@ -82,7 +85,7 @@
         <div class="control-group error"><?php echo $error; ?></div>
         <button class="btn" type="Submit">CREATE</button>
       </form>
-      <a class="link link-login" href="signin.html" align="right">Help</a>
+      <a class="link link-login" href="help.php" align="right">Help</a>
     </div>
   </div>
 </body>

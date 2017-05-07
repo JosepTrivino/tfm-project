@@ -6,11 +6,53 @@ include('includes/variables.php');
 include('includes/functions.php');
 
 $email = $_SESSION['login_user'];
+$id = $_SESSION['login_id'];
 $userId = $_GET["id"];
+$friendFound = 0;
+$error = '';
+$success = '';
+
+if($_SERVER["REQUEST_METHOD"] == "POST") {
+    if($_POST['option'] == "add"){
+        $concat = $userId.",";
+        $sql = "UPDATE users SET userFriends = CONCAT(userFriends, '$concat') WHERE userId = '$id'";
+        $result = mysqli_query($mysqli,$sql);
+        if($result) {
+            $success = "The user has been added to your friend list.";
+        }
+        else{
+            $error = "Unexpected error. Try again later."; 
+        }
+    }
+    else{
+        $concat = ",".$userId.",";
+        $sql = "UPDATE users SET userFriends = REPLACE(userFriends, '$concat', ',') WHERE userId = '$id'"; 
+        $result = mysqli_query($mysqli,$sql);
+        if($result) {
+            $success = "The user has been deleted from your friend list.";
+        }
+        else{
+            $error = "Unexpected error. Try again later."; 
+        }
+    }
+}
 
 $sql = "SELECT * FROM users WHERE userId = '$userId'";
 $result = mysqli_query($mysqli,$sql);
+$user_result = mysqli_fetch_assoc($result);
+
+$sql = "SELECT * FROM users WHERE userId = '$id'";
+$result = mysqli_query($mysqli,$sql);
 $profile_result = mysqli_fetch_assoc($result);
+if($profile_result['userFriends'] != ''){
+    $friends_array = explode(',', $profile_result['userFriends']);
+    foreach($friends_array as $friends){
+        if($friends == $userId){
+            $friendFound = 1;
+            break;
+        }
+    }
+}
 ?>
 
 <!doctype html>
@@ -33,7 +75,7 @@ $profile_result = mysqli_fetch_assoc($result);
 </head>
 <body>
 
-    <header id="header" class="okayNav-header">
+     <header id="header" class="okayNav-header">
         <a class="okayNav-header__logo">
            <img src="images/logo.jpg" alt="Logo Icon"  height="50" width="50">
         </a>
@@ -41,23 +83,98 @@ $profile_result = mysqli_fetch_assoc($result);
             <ul>
                 <li><a href="profile_information.php">Profile </a></li>
                 <li><a href="search.php">Search</a></li>
-                <li><a href="#">Configuration</a></li>
-                <li><a href="#">Help</a></li>
+                <li><a href="configuration.php">Configuration</a></li>
+                <li><a href="help.php">Help</a></li>
                 <li><a href="includes/logout.php">Close session</a></li>
             </ul>
         </nav>
-    </header>
+    </header> 
     <main style="margin-top: 5rem; background-color: white">
       <div style="display:flex;align-items:center; background-color: #3498DB">
         <?php
-          echo '<img src="'.$profile_result["userImage"].'" alt="Profile Image"  height="70" width="70" class="profile-image">';
-          echo '<h1>'.$profile_result["userName"]." ".$profile_result["userLastName"]. '</h1>'; 
+          echo '<img src="'.$user_result["userImage"].'" alt="Profile Image"  height="70" width="70" class="profile-image"> </img>';
+          echo '<h1>'.$user_result["userName"]." ".$user_result["userLastName"]. '</h1>'; 
+          echo '<br style="clear:both;" />';
         ?>
+      </div>
+      <div style="background-color: #3498DB">
+      <div style="margin-top:0px; margin-left: 20px" class="success"><?php echo $success; ?></div>
+      <div style="margin-top:0px; margin-left: 20px" class="error"><?php echo $error; ?></div>
+        <?php
+            echo '<form action="" method="post">';
+          if($friendFound == 0){
+            echo '<button class="btn btn-user" name="option" value="add" type="Submit" align="right">Add friend</button>';
+          }
+          else{
+            echo '<button class="btn btn-user" name="option" value="delete" type="Submit" align="right">Delete friend</button>';
+          }
+          echo '<a class="btn btn-user" align="right" href="message.php?id='.$user_result['userId'].'" align="right">Send message</a>';
+          echo '</form>';
+            ?>
       </div>
       <ul class="nav nav-pills nav-justified" style="background-color: #3498DB">
         <li class="active"><a data-toggle="tab" href="#description">Description</a></li>
         <li><a data-toggle="tab" href="#opinions">Opinions</a></li>
       </ul>
+       <div class="tab-content" style="background-color: white; margin: 20px;">
+        <div id="home" class="tab-pane fade in active">
+        <section>
+            <div class="item-profile">
+                <label for="name">Name</label>
+                  <?php echo '<input readonly="readonly" class="blocked" type="text" value="'.$user_result["userName"].'">'; ?>
+                </div>
+                <div class="item-profile">
+                  <label for="lastname">Lastname</label>
+                  <?php echo '<input readonly="readonly" class="blocked" type="text" value="'.$user_result["userLastName"].'"/>'; ?>
+                </div>
+                <div class="item-profile">
+                  <label for="dateofbirth">Date of birth</label>
+                  <?php 
+                    $date = date_format(date_create($user_result["userDBirth"]),"d/m/Y");
+                    echo '<input readonly="readonly" class="blocked" type="text" value="'.$date.'">'; ?>
+                </div>
+                <div class="item-profile-right">
+                    <label for="gender">Gender</label>
+                    <?php
+                    foreach($genders as $code => $gender){
+                        if($code == $profile_result["userGender"]){
+                            echo '<input readonly="readonly" class="blocked" type="text" value="'.$gender.'">';
+                        }
+                    }
+                    ?>
+                </div>
+                <br style="clear:both;" />
+              </section>
+              <section>
+                <div class="item-profile">
+                  <label for="country">Contry</label>
+                    <?php
+                    foreach($countries as $code => $country){
+                        if($code == $profile_result["userCountry"]){
+                            echo '<input style="max-width:420px; width:100%;" readonly="readonly" class="blocked" type="text" name="city" id="city" value="'.$country.'">';
+                        }
+                    }
+                    ?>
+                  </select>
+                </div>
+                <div class="item-profile">
+                  <label for="city">City</label>
+                  <?php echo '<input readonly="readonly" class="blocked" type="text" name="city" id="city" value="'.$profile_result["userCity"].'">'; ?>
+                </div>
+                  </select>
+                </div>
+                <br style="clear:both;" />
+              </section>
+              <section>
+                <div class="item-profile">
+                  <label for="information" >My information</label>
+                  <?php echo '<textarea readonly="readonly" class="blocked" rows="5" cols="50" name="information" id="information">'.$profile_result["userDescription"].'</textarea>'; ?>
+                </div>
+                <br style="clear:both;" />
+              </section>
+              <br style="clear:both;" />
+            </div>
+        </div>
     </main>
     <script type="text/javascript">
       var navigation = $('#nav-main').okayNav();
