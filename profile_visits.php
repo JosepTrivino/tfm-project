@@ -11,11 +11,23 @@ $errorNoMessages='';
 $email = $_SESSION['login_user'];
 $id = $_SESSION['login_id'];
 
+if($_SERVER["REQUEST_METHOD"] == "POST") {
+  $visitId = $_POST['visitId'];
+  $sql = "DELETE FROM visits WHERE visitId = $visitId";
+  $result = mysqli_query($mysqli,$sql);
+  if($result) {
+    $success = "The visit has been deleted.";
+  }
+  else{
+    $error = "Unexpected error. Try again later."; 
+  }
+}
+
 $sql = "SELECT * FROM users WHERE userId = '$id'";
 $result = mysqli_query($mysqli,$sql);
 $profile_result = mysqli_fetch_assoc($result);
 
-$sql = "SELECT * FROM messages WHERE userRxId = '$id' || userTxId = '$id' ORDER BY messageDate DESC";
+$sql = "SELECT * FROM visits WHERE userId = '$id' ORDER BY visitStart DESC";
 $result = mysqli_query($mysqli,$sql);
 ?>
 <!doctype html>
@@ -59,36 +71,33 @@ $result = mysqli_query($mysqli,$sql);
 
         <ul class="nav nav-pills nav-justified" style="background-color: #3498DB">
           <li><a href="profile_information.php">Description</a></li>
-          <li class="active"><a data-toggle="tab" href="#messages">Messages</a></li>
+          <li><a href="profile_messages.php">Messages</a></li>
           <li><a href="profile_friends.php">Friends</a></li>
           <li><a href="profile_opinions.php">Opinions</a></li>
-          <li><a href="profile_visits.php">Visits</a></li>
+          <li class="active"><a data-toggle="tab" href="#visits">Visits</a></li>
         </ul>
         <div class="tab-content div-outer" style="background-color: white">
+            <div class="success"><?php echo $success; ?></div>
+            <div class="error"><?php echo $error; ?></div>
             <?php
               if(mysqli_num_rows($result) > 0){
-                while($messages_result = mysqli_fetch_assoc($result)){
-                  $date = date_format(date_create($messages_result["messageDate"]),"d/m/Y");
+                while($visits_result = mysqli_fetch_assoc($result)){
+                  $date_ini = date_format(date_create($visits_result["visitStart"]),"d/m/Y");
+                  $date_end = date_format(date_create($visits_result["visitEnd"]),"d/m/Y");
             ?>
-                  <div class="div-inner">
-                  <?php if($messages_result['userTxId'] != $_SESSION['login_id']){ ?>
-                    <a class="link float-right" href="message.php?id=<?php echo $messages_result['userTxId'];?>">Answer</a>
-                  <?php } ?>
-                  <?php if($messages_result['userTxId'] == $_SESSION['login_id']){ ?>
-                        <p><strong>From:</strong> <?php echo$messages_result["userTxName"];?></p>
-                        <p><strong>To:</strong> <a class="link" href="profile_user_information.php?id=<?php echo $messages_result["userRxId"];?>"> <?php echo $messages_result["userRxName"];?></a></p>
-                  <?php } else{ ?>
-                        <p><strong>From:</strong> <a class="link" href="profile_user_information.php?id=<?php echo $messages_result["userTxId"];?>"> <?php echo $messages_result["userTxName"];?></a></p>
-                        <p><strong>To:</strong> <?php echo $messages_result["userRxName"];?></p>               
-                  <?php } ?>
-                        <p><strong>Date:</strong> <?php echo $date;?></p>
-                        <p><strong>Title:</strong> <?php echo $messages_result["messageTitle"];?></p>
-                        <textarea readonly="readonly" class="blocked" rows="5" cols="50" style="width:600px;"><?php echo $messages_result["messageText"];?></textarea>
+                   <div class="div-inner">
+                    <form class="float-right" style="display:inline-block" action="" method="post">
+                      <button class="btn btn-user" style="margin-left:0px; max-width:100px;" name="visitId" value="<?php echo $visits_result["visitId"];?>" type="Submit" align="right">Delete</button>
+                    </form>
+                    <p><strong>Name: </strong><a class="link" href="profile_user.php?id=<?php echo $visits_result["visitId"];?>"> <?php echo $visits_result["objectName"];?></a></p>
+                    <p style="display:inline-block"><strong>From </strong><?php echo $date_ini;?></p>
+                    <p style="display:inline-block"><strong> to </strong><?php echo $date_end;?></p>
                     </div><hr>
-                <?php } ?>
-              <?php } else{ ?>
-                <div style="margin-left:20px" class="error">No messages found</div>
-              <?php } ?>
+            <?php }
+              } else { ?>
+                <div class="error">No visits found</div>
+            <?php } ?>
+
         </div>
     </main>
     <script type="text/javascript">

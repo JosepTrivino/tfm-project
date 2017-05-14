@@ -62,10 +62,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         </nav>
     </header>
     <main>
-      <div class="searcher">
-        <div class="searcher-screen">
+      <div class="div-outer">
+        <div class="div-inner">
             <form action="" method="post">
-                <div class="searcher-title">
+                <div class="div-title">
                     <h1 style="text-align: center">Configuration</h1>
                 </div>
                 <div class="control-group" center="left">

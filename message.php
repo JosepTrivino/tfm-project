@@ -75,21 +75,19 @@ else{
         </nav>
     </header>
     <main>
-        <div class="searcher">
-            <div class="searcher-screen">
+        <div class="div-outer">
+            <div class="div-inner">
                 <form action="" method="post">
-                    <div class="searcher-title">
+                    <div class="div-title">
                         <h1 style="text-align: center">New message</h1>
                     </div>
                     <div class="control-group">
-                        <?php
-                            echo '<p ><strong>From:</strong> '.$profile_result["userName"].' '.$profile_result["userLastName"].'</p>';
-                            echo '<p><strong>To:</strong> <a href="profile_user.php?id='.$user_result["userId"].'" class="link"> '.$user_result["userName"].' '.$user_result["userLastName"].'</a></p>';
-                            echo '<input type="hidden" name="userRxId" value="'.$user_result["userId"].'"/>';
-                            echo '<input type="hidden" name="userTxId" id="userTxId" value="'.$profile_result["userId"].'"/>';
-                            echo '<input type="hidden" name="userRxName" id="userRxName" value="'.$user_result["userName"].' '.$user_result["userLastName"].'"/>';
-                            echo '<input type="hidden" name="userTxName" id="userTxName" value="'.$profile_result["userName"].' '.$profile_result["userLastName"].'"/>';
-                        ?>
+                        <p ><strong>From:</strong> <?php echo $profile_result["userName"]; echo " "; echo $profile_result["userLastName"];?></p>
+                        <p><strong>To:</strong> <a href="profile_user_information.php?id=<?php echo $user_result["userId"];?>" class="link"> <?php echo $user_result["userName"]; echo " "; echo $user_result["userLastName"];?></a></p>
+                        <input type="hidden" name="userRxId" value="<?php echo $user_result["userId"]?>"/>
+                        <input type="hidden" name="userTxId" id="userTxId" value="<?php echo $profile_result["userId"];?>"/>
+                        <input type="hidden" name="userRxName" id="userRxName" value="<?php echo $user_result["userName"]; echo " "; echo $user_result["userLastName"];?>"/>
+                        <input type="hidden" name="userTxName" id="userTxName" value="<?php echo $profile_result["userName"]; echo " "; echo $profile_result["userLastName"];?>"/>
                     </div>
                     <div class="control-group">
                         <p><strong>Title:</strong></p>

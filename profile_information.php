@@ -63,6 +63,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 $sql = "SELECT * FROM users WHERE userId = '$id'";
 $result = mysqli_query($mysqli,$sql);
 $profile_result = mysqli_fetch_assoc($result);
+$date = date_format(date_create($profile_result["userDBirth"]),"d/m/Y");
 ?>
 <!doctype html>
 <html>
@@ -98,42 +99,38 @@ $profile_result = mysqli_fetch_assoc($result);
     </header>
     <main style="margin-top: 5rem; background-color: white">
         <div style="display:flex;align-items:center; background-color: #3498DB">
-          <?php
-            echo '<img src="'.$profile_result["userImage"].'" alt="Profile Image"  height="70" width="70" class="profile-image">';
-            echo '<h1>'.$profile_result["userName"]." ".$profile_result["userLastName"]. '</h1>'; 
-          ?>
+          <img src="<?php echo $profile_result["userImage"];?>" alt="Profile Image"  height="70" width="70" class="profile-image"/>
+          <h1> <?php echo $profile_result["userName"]; echo " "; echo $profile_result["userLastName"]; ?></h1>
         </div>
         <ul class="nav nav-pills nav-justified" style="background-color: #3498DB">
           <li class="active"><a data-toggle="tab" href="#description">Description</a></li>
           <li><a href="profile_messages.php">Messages</a></li>
           <li><a href="profile_friends.php">Friends</a></li>
-          <li><a data-toggle="tab" href="#opinions">Opinions</a></li>
-          <li><a data-toggle="tab" href="#visits">Visits</a></li>
+          <li><a href="profile_opinions.php">Opinions</a></li>
+          <li><a href="profile_visits.php">Visits</a></li>
         </ul>
         <div class="tab-content" style="background-color: white; margin: 20px;">
             <form action="" method="post" enctype="multipart/form-data">
-              <div class="control-group error"><?php echo $error; ?></div>
+              <div class="error"><?php echo $error; ?></div>
               <div class="success"><?php echo $success; ?></div>
               <section>
                 <div class="item-profile">
                   <label for="name">Name</label>
-                  <?php echo '<input type="text" required name="name" placeholder="Name" value="'.$profile_result["userName"].'">'; ?>
+                  <input type="text" required name="name" placeholder="Name" value="<?php echo $profile_result["userName"];?>" />
                 </div>
                 <div class="item-profile">
                   <label for="lastname">Lastname</label>
-                  <?php echo '<input type="text" name="lastname" required placeholder="Lastname" value="'.$profile_result["userLastName"].'"/>'; ?>
+                  <input type="text" name="lastname" required placeholder="Lastname" value="<?php echo $profile_result["userLastName"];?>" />
                 </div>
                 <div class="item-profile">
                   <label for="dateofbirth">Date of birth</label>
-                  <?php 
-                    $date = date_format(date_create($profile_result["userDBirth"]),"d/m/Y");
-                    echo '<input type="text" required name="dateofbirth" "Date of birth (DD/MM/YYYY)" pattern="\d{1,2}/\d{1,2}/\d{4}" placeholder="DD/MM/YYYY" value="'.$date.'">'; ?>
+                  <input type="text" required name="dateofbirth" pattern="\d{1,2}/\d{1,2}/\d{4}" placeholder="DD/MM/YYYY" value="<?php echo $date;?>" />
                 </div>
                 <div class="item-profile-right">
                   <label for="email">Email</label>
-                  <?php echo '<input readonly="readonly" class="blocked" type="email" name="email" value='.$profile_result["userEmail"].'>'; ?>
+                  <input readonly="readonly" class="blocked" type="email" name="email" value="<?php echo $profile_result["userEmail"];?>" />
                 </div>
-                <br style="clear:both;" />
+                <br style="clear:both;"/>
               </section>
               <section>
                 <div class="item-profile">
@@ -152,7 +149,7 @@ $profile_result = mysqli_fetch_assoc($result);
                 </div>
                 <div class="item-profile">
                   <label for="city">City</label>
-                  <?php echo '<input type="text" name="city" id="city" value="'.$profile_result["userCity"].'">'; ?>
+                  <input type="text" name="city" id="city" value="<?php echo $profile_result["userCity"];?>" />
                 </div>
                 <div class="item-profile-right">
                   <label for="gender">Gender</label>
@@ -181,7 +178,7 @@ $profile_result = mysqli_fetch_assoc($result);
               <section>
                 <div class="item-profile">
                   <label for="information" >My information</label>
-                  <?php echo '<textarea rows="5" cols="50" name="information" id="information">'.$profile_result["userDescription"].'</textarea>'; ?>
+                   <textarea rows="5" cols="50" name="information" id="information"><?php echo $profile_result["userDescription"]?></textarea>
                 </div>
                 <br style="clear:both;" />
               </section>

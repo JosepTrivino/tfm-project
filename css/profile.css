@@ -55,3 +55,14 @@ figure {
 	max-height: 30px;
 	padding: 0px 12px;
  }
+
+ .div-profile{
+ 	width: 600px;
+ 	margin: 20px auto;
+
+ }
+
+ .float-right{
+ 	display:inline-block;
+ 	float:right;
+ }

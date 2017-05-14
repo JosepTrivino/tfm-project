@@ -6,23 +6,6 @@
 	outline: none;
 }
 
-.searcher {
-  margin: 20px auto;
-  width: auto;
-  max-width: 600px;
-}
-
-.searcher-screen {
-  background-color: #FFF;
-  padding: 20px;
-  border-radius: 5px
-}
-
-.searcher-title {
-  text-align: left;
-  color: #555;
-}
-
 .btn {
   width: 100px;
   display: inline

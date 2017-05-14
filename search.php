@@ -11,6 +11,7 @@ require( 'includes/headers.php' );
     <title>Searcher</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <link rel="stylesheet" href="applications/bootstrap/css/bootstrap.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="applications/bootstrap/js/bootstrap.js"></script>
     <link rel="stylesheet" href="css/default.css">
     <link rel="stylesheet" href="css/searcher.css" >
@@ -37,34 +38,43 @@ require( 'includes/headers.php' );
         </nav>
     </header>
     <main>
-        <div class="searcher">
-            <div class="searcher-screen">
-                <form action="" method="post">
-                    <div class="searcher-title">
+        <div class="div-outer">
+            <div class="div-inner">
+                    <div class="div-title">
                         <h1 style="text-align: center">What are you searching for?</h1>
                     </div>
                     <div class="control-group" center="left">
-                        <input type="radio" value="h" checked="checked" name="optradio">Hostels</input>
-                        <input type="radio" value="a" name="optradio">Activities </input>
+                        <input type="radio" value="0" checked="checked" name="optradio">Hostels</input>
+                        <input type="radio" value="1" name="optradio">Activities </input>
                     </div>
                     <div class="control-group" center="left">
-                        <input type="search" name="city" placeholder="Search city" required>
+                        <input type="search" name="city" id="city" placeholder="Search city" required>
                     </div>
                     <div class="control-group" center="left">
                         <label for="ini">From</label>
                         <input placeholder="DD/MM/YYYY" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="ini" id="ini" required>
                         <label for="fin">to</label>
-                        <input placeholder="DD/MM/YYYY" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="fin" id="fin" required>
+                        <input placeholder="DD/MM/YYYY" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="end" id="end" required>
                     </div>
+                    <div id="valid-dates" class="error" hidden>Invalid dates</div>
                     <div class="button-div">
-                        <button class="btn" type="Submit" align="right">SEARCH</button>
+                        <button class="btn" onclick="validate()" align="right">SEARCH</button>
                     </div>
                 </form>
-            </div>
         </div>
     </main>
     <script type="text/javascript">
         var navigation = $('#nav-main').okayNav();
+        function validate() {
+            var date_ini = $('#ini').val();
+            var date_end = $('#end').val();
+            if ($.datepicker.parseDate('dd/mm/yy', date_ini) > $.datepicker.parseDate('dd/mm/yy', date_end)) {
+                $('#valid-dates').show();
+            }
+            else{
+                window.location = "object_list?city=" + $('#city').val() + "&dateIni=" + $('#ini').val() + "&dateEnd=" + $('#end').val() + "&type=" + $('input[name=optradio]:checked').val();
+            }
+        }
     </script>
 </body>
 </html>

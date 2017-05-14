@@ -37,9 +37,9 @@
     }
     ?>
     <main>
-      <div class="searcher">
-        <div class="searcher-screen">
-          <div class="searcher-title">
+      <div class="div-outer">
+        <div class="div-inner">
+          <div class="div-title">
             <h1 style="text-align: center">Help</h1>
           </div>
           <div class="control-group" center="left">

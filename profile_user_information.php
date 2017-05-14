@@ -40,6 +40,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 $sql = "SELECT * FROM users WHERE userId = '$userId'";
 $result = mysqli_query($mysqli,$sql);
 $user_result = mysqli_fetch_assoc($result);
+$date = date_format(date_create($user_result["userDBirth"]),"d/m/Y");
 
 $sql = "SELECT * FROM users WHERE userId = '$id'";
 $result = mysqli_query($mysqli,$sql);
@@ -91,90 +92,80 @@ if($profile_result['userFriends'] != ''){
     </header> 
     <main style="margin-top: 5rem; background-color: white">
       <div style="display:flex;align-items:center; background-color: #3498DB">
-        <?php
-          echo '<img src="'.$user_result["userImage"].'" alt="Profile Image"  height="70" width="70" class="profile-image"> </img>';
-          echo '<h1>'.$user_result["userName"]." ".$user_result["userLastName"]. '</h1>'; 
-          echo '<br style="clear:both;" />';
-        ?>
+          <img src="<?php echo $user_result["userImage"]?>" alt="Profile Image"  height="70" width="70" class="profile-image"> </img>
+          <h1><?php echo $user_result["userName"]; echo " "; echo $user_result["userLastName"];?></h1>
+          <br style="clear:both;" />
       </div>
       <div style="background-color: #3498DB">
       <div style="margin-top:0px; margin-left: 20px" class="success"><?php echo $success; ?></div>
       <div style="margin-top:0px; margin-left: 20px" class="error"><?php echo $error; ?></div>
-        <?php
-            echo '<form action="" method="post">';
-          if($friendFound == 0){
-            echo '<button class="btn btn-user" name="option" value="add" type="Submit" align="right">Add friend</button>';
-          }
-          else{
-            echo '<button class="btn btn-user" name="option" value="delete" type="Submit" align="right">Delete friend</button>';
-          }
-          echo '<a class="btn btn-user" align="right" href="message.php?id='.$user_result['userId'].'" align="right">Send message</a>';
-          echo '</form>';
-            ?>
+        <form action="" method="post">
+          <?php if($friendFound == 0){?>
+            <button class="btn btn-user" name="option" value="add" type="Submit" align="right">Add friend</button>
+          <?php } else{?>
+            <button class="btn btn-user" name="option" value="delete" type="Submit" align="right">Delete friend</button>
+          <?php }?>
+          <a class="btn btn-user" align="right" href="message.php?id=<?php echo $user_result['userId'];?>" align="right">Send message</a>
+        </form>
       </div>
       <ul class="nav nav-pills nav-justified" style="background-color: #3498DB">
         <li class="active"><a data-toggle="tab" href="#description">Description</a></li>
-        <li><a data-toggle="tab" href="#opinions">Opinions</a></li>
+        <li><a href="profile_user_opinions.php?id=<?php echo $userId;?>">Opinions</a></li>
       </ul>
-       <div class="tab-content" style="background-color: white; margin: 20px;">
-        <div id="home" class="tab-pane fade in active">
-        <section>
+      <div class="tab-content" style="background-color: white;  margin: 20px;">
+        <div id="description" class="tab-pane fade in active">
+          <section>
             <div class="item-profile">
-                <label for="name">Name</label>
-                  <?php echo '<input readonly="readonly" class="blocked" type="text" value="'.$user_result["userName"].'">'; ?>
-                </div>
-                <div class="item-profile">
-                  <label for="lastname">Lastname</label>
-                  <?php echo '<input readonly="readonly" class="blocked" type="text" value="'.$user_result["userLastName"].'"/>'; ?>
-                </div>
-                <div class="item-profile">
-                  <label for="dateofbirth">Date of birth</label>
-                  <?php 
-                    $date = date_format(date_create($user_result["userDBirth"]),"d/m/Y");
-                    echo '<input readonly="readonly" class="blocked" type="text" value="'.$date.'">'; ?>
-                </div>
-                <div class="item-profile-right">
-                    <label for="gender">Gender</label>
-                    <?php
-                    foreach($genders as $code => $gender){
-                        if($code == $profile_result["userGender"]){
-                            echo '<input readonly="readonly" class="blocked" type="text" value="'.$gender.'">';
-                        }
-                    }
-                    ?>
-                </div>
-                <br style="clear:both;" />
-              </section>
-              <section>
-                <div class="item-profile">
-                  <label for="country">Contry</label>
-                    <?php
-                    foreach($countries as $code => $country){
-                        if($code == $profile_result["userCountry"]){
-                            echo '<input style="max-width:420px; width:100%;" readonly="readonly" class="blocked" type="text" name="city" id="city" value="'.$country.'">';
-                        }
-                    }
-                    ?>
-                  </select>
-                </div>
-                <div class="item-profile">
-                  <label for="city">City</label>
-                  <?php echo '<input readonly="readonly" class="blocked" type="text" name="city" id="city" value="'.$profile_result["userCity"].'">'; ?>
-                </div>
-                  </select>
-                </div>
-                <br style="clear:both;" />
-              </section>
-              <section>
-                <div class="item-profile">
-                  <label for="information" >My information</label>
-                  <?php echo '<textarea readonly="readonly" class="blocked" rows="5" cols="50" name="information" id="information">'.$profile_result["userDescription"].'</textarea>'; ?>
-                </div>
-                <br style="clear:both;" />
-              </section>
-              <br style="clear:both;" />
+              <label for="name">Name</label>
+              <input readonly="readonly" class="blocked" type="text" value="<?php echo $user_result["userName"];?>"/>
             </div>
+            <div class="item-profile">
+              <label for="lastname">Lastname</label>
+              <input readonly="readonly" class="blocked" type="text" value="<?php echo $user_result["userLastName"];?>"/>
+            </div>
+            <div class="item-profile">
+              <label for="dateofbirth">Date of birth</label>
+              <input readonly="readonly" class="blocked" type="text" value="<?php echo $date;?>"/>
+            </div>
+            <div class="item-profile-right">
+              <label for="gender">Gender</label>
+              <?php
+                foreach($genders as $code => $gender){
+                  if($code == $profile_result["userGender"]){
+                    echo '<input readonly="readonly" class="blocked" type="text" value="'.$gender.'">';
+                  }
+                }
+              ?>
+            </div>
+            <br style="clear:both;" />
+          </section>
+          <section>
+            <div class="item-profile">
+              <label for="country">Contry</label>
+              <?php
+                foreach($countries as $code => $country){
+                  if($code == $profile_result["userCountry"]){
+                    echo '<input style="max-width:420px; width:100%;" readonly="readonly" class="blocked" type="text" name="city" id="city" value="'.$country.'">';
+                  }
+                }
+              ?>
+            </div>
+            <div class="item-profile">
+              <label for="city">City</label>
+              <input readonly="readonly" class="blocked" type="text" name="city" id="city" value="<?php echo $profile_result["userCity"];?>" />
+            </div>
+            <br style="clear:both;" />
+          </section>
+          <section>
+            <div class="item-profile">
+              <label for="information" >My information</label>
+              <textarea readonly="readonly" class="blocked" rows="5" cols="50" name="information" id="information"><?php echo "string"; $profile_result["userDescription"];?></textarea>
+            </div>
+            <br style="clear:both;" />
+          </section>
+          <br style="clear:both;" />
         </div>
+      </div>
     </main>
     <script type="text/javascript">
       var navigation = $('#nav-main').okayNav();

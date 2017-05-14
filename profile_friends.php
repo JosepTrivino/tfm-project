@@ -48,45 +48,43 @@ $profile_result = mysqli_fetch_assoc($result);
         </nav>
     </header>
     <main style="margin-top: 5rem; background-color: white">
-      <div style="display:flex;align-items:center; background-color: #3498DB">
-        <?php
-          echo '<img src="'.$profile_result["userImage"].'" alt="Profile Image"  height="70" width="70" class="profile-image">';
-          echo '<h1>'.$profile_result["userName"]." ".$profile_result["userLastName"]. '</h1>'; 
-        ?>
-      </div>
+        <div style="display:flex;align-items:center; background-color: #3498DB">
+          <img src="<?php echo $profile_result["userImage"];?>" alt="Profile Image"  height="70" width="70" class="profile-image"/>
+          <h1> <?php echo $profile_result["userName"]; echo " "; echo $profile_result["userLastName"]; ?></h1>
+        </div>
 
       <ul class="nav nav-pills nav-justified" style="background-color: #3498DB">
         <li><a href="profile_information.php">Description</a></li>
         <li><a  href="profile_messages.php">Messages</a></li>
         <li class="active"><a data-toggle="tab" href="#friends">Friends</a></li>
-        <li><a data-toggle="tab" href="#opinions">Opinions</a></li>
-        <li><a data-toggle="tab" href="#visits">Visits</a></li>
+        <li><a href="profile_opinions.php">Opinions</a></li>
+        <li><a href="profile_visits.php">Visits</a></li>
       </ul>
-      <div class="tab-content" style="background-color: white; margin: 20px">
+      <div class="tab-content" style="background-color: white;">
         <?php
           if ($profile_result['userFriends'] != ','){
             $friends_array = explode(',', $profile_result['userFriends']);
-            echo '<div id="container-friends">';
+        ?>
+          <div id="container-friends">
+          <?php
             foreach($friends_array as $friends){
               $sql_friend = "SELECT userId, userName, userLastName, userImage FROM users WHERE userId = '$friends'";
               $friends_result = mysqli_query($mysqli,$sql_friend);
               if(mysqli_num_rows($friends_result) > 0){
                 $friends_result = mysqli_fetch_assoc($friends_result);
-                echo'
-                <a href="profile_user.php?id='.$friends_result["userId"].'" class="link">
+          ?>
+                <a href="profile_user_information.php?id=<?php echo $friends_result["userId"];?>" class="link">
                     <figure>
-                        <img src="'.$friends_result["userImage"].'" alt="Profile Image"  height="70" width="70" class="profile-image">
-                        <figcaption >'.$friends_result["userName"].' '.$friends_result["userLastName"].'</figcaption>
+                        <img src="<?php echo $friends_result["userImage"];?>" alt="Profile Image"  height="70" width="70" class="profile-image">
+                        <figcaption><?php echo $friends_result["userName"]; echo " "; echo $friends_result["userLastName"];?></figcaption>
                     </figure>
-                </a>';
-              }
-            }
-            echo '</div';
-          }
-          else{
-            echo'<div class="control-group error">You have not have any friend</div>';
-          }
-        ?>
+                </a>
+           <?php } ?>
+          <?php } ?>
+          </div>
+          <?php }else{?>
+            <div style="margin-left:20px" class="error">No friends found</div>
+          <?php } ?>
       </div>
     </main>
     <script type="text/javascript">
