@@ -24,3 +24,13 @@ input[type="search"] {
 input[type="text"] {
     width: 30%;
 }
+
+.vertical-line {
+  display: inline-block;
+  margin-right: 5px;
+  border-right: 2px solid #555;
+}
+
+.margin-line {
+  margin-right: 10px;
+}

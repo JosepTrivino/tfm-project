@@ -18,8 +18,8 @@
 <body>
     <?php
     session_start();
-    if (isset( $_SESSION['login_id'] ) ) {
-    echo '
+    if (isset( $_SESSION['login_id'] ) ) { 
+    ?>
           <header id="header" class="okayNav-header">
         <a class="okayNav-header__logo">
            <img src="images/logo.jpg" alt="Logo Icon"  height="50" width="50">
@@ -34,8 +34,7 @@
             </ul>
         </nav>
     </header>';
-    }
-    ?>
+    <?php }?>
     <main>
       <div class="div-outer">
         <div class="div-inner">

@@ -40,27 +40,27 @@ require( 'includes/headers.php' );
     <main>
         <div class="div-outer">
             <div class="div-inner">
-                    <div class="div-title">
-                        <h1 style="text-align: center">What are you searching for?</h1>
-                    </div>
-                    <div class="control-group" center="left">
-                        <input type="radio" value="0" checked="checked" name="optradio">Hostels</input>
-                        <input type="radio" value="1" name="optradio">Activities </input>
-                    </div>
-                    <div class="control-group" center="left">
-                        <input type="search" name="city" id="city" placeholder="Search city" required>
-                    </div>
-                    <div class="control-group" center="left">
-                        <label for="ini">From</label>
-                        <input placeholder="DD/MM/YYYY" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="ini" id="ini" required>
-                        <label for="fin">to</label>
-                        <input placeholder="DD/MM/YYYY" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="end" id="end" required>
-                    </div>
-                    <div id="valid-dates" class="error" hidden>Invalid dates</div>
-                    <div class="button-div">
-                        <button class="btn" onclick="validate()" align="right">SEARCH</button>
-                    </div>
-                </form>
+                <div class="div-title">
+                    <h1 style="text-align: center">What are you searching for?</h1>
+                </div>
+                <div class="control-group" center="left">
+                    <input type="radio" value="0" checked="checked" name="optradio">Hostels</input>
+                    <input type="radio" value="1" name="optradio">Activities </input>
+                </div>
+                <div class="control-group" center="left">
+                    <input type="search" name="city" id="city" placeholder="Search city" required>
+                </div>
+                <div class="control-group" center="left">
+                    <label for="ini">From</label>
+                    <input placeholder="DD/MM/YYYY" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="ini" id="ini" required>
+                    <label for="fin">to</label>
+                    <input placeholder="DD/MM/YYYY" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="end" id="end" required>
+                 </div>
+                <div id="valid-dates" class="error" hidden>Invalid dates</div>
+                <div class="button-div">
+                    <button class="btn" onclick="validate()" align="right">SEARCH</button>
+                </div>
+            </div>
         </div>
     </main>
     <script type="text/javascript">
