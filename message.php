@@ -8,11 +8,19 @@ $error=''; // error message
 
 $email = $_SESSION['login_user'];
 $id = $_SESSION['login_id'];
-$userId = $_GET["id"];
 
-$sql = "SELECT * FROM users WHERE userId = '$userId'";
-$result = mysqli_query($mysqli,$sql);
-$user_result = mysqli_fetch_assoc($result);
+if(isset($_GET['id']) && $_GET['id'] != ''){
+    $userId = $_GET["id"];
+    $sql = "SELECT * FROM users WHERE userId = '$userId'";
+    $result = mysqli_query($mysqli,$sql);
+    if($result && mysqli_num_rows($result) != 0){
+        $user_result = mysqli_fetch_assoc($result);
+    } else {
+        header("location: error_page.php");
+    }
+} else {
+    header("location: error_page.php");
+}
 
 $sql = "SELECT * FROM users WHERE userId = '$id'";
 $result = mysqli_query($mysqli,$sql);
@@ -28,8 +36,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $result = mysqli_query ($mysqli, $sql);
         if($result) {
             header("location: {$_SESSION['history']}");
-        }
-        else{
+        } else {
             $error="Message couldn't be send. Try later.";
         }
     }

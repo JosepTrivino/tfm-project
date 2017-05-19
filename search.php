@@ -68,7 +68,9 @@ require( 'includes/headers.php' );
         function validate() {
             var date_ini = $('#ini').val();
             var date_end = $('#end').val();
-            if ($.datepicker.parseDate('dd/mm/yy', date_ini) > $.datepicker.parseDate('dd/mm/yy', date_end)) {
+            var today = new Date();
+            alert(today);
+            if ($.datepicker.parseDate('dd/mm/yy', date_ini) > $.datepicker.parseDate('dd/mm/yy', date_end) && date_ini < today) {
                 $('#valid-dates').show();
             }
             else{

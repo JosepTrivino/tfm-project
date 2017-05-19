@@ -7,7 +7,6 @@ include('includes/functions.php');
 
 $email = $_SESSION['login_user'];
 $id = $_SESSION['login_id'];
-$userId = $_GET["id"];
 $friendFound = 0;
 $error = '';
 $success = '';
@@ -19,42 +18,48 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $result = mysqli_query($mysqli,$sql);
         if($result) {
             $success = "The user has been added to your friend list.";
-        }
-        else{
+        } else {
             $error = "Unexpected error. Try again later."; 
         }
-    }
-    else{
+    } else {
         $concat = ",".$userId.",";
         $sql = "UPDATE users SET userFriends = REPLACE(userFriends, '$concat', ',') WHERE userId = '$id'"; 
         $result = mysqli_query($mysqli,$sql);
         if($result) {
             $success = "The user has been deleted from your friend list.";
-        }
-        else{
+        } else {
             $error = "Unexpected error. Try again later."; 
         }
     }
 }
 
-$sql = "SELECT * FROM users WHERE userId = '$userId'";
-$result = mysqli_query($mysqli,$sql);
-$user_result = mysqli_fetch_assoc($result);
+if(isset($_GET['id']) && $_GET['id'] != ''){
+  $userId = $_GET["id"];
+  $sql = "SELECT * FROM users WHERE userId = '$userId'";
+  $result = mysqli_query($mysqli,$sql);
+  if($result && mysqli_num_rows($result) != 0){
+    $user_result = mysqli_fetch_assoc($result);
 
-$sql = "SELECT * FROM opinions WHERE userId = '$userId'";
-$result_opinions = mysqli_query($mysqli,$sql);
+    $sql = "SELECT * FROM opinions WHERE userId = '$userId'";
+    $result_opinions = mysqli_query($mysqli,$sql);
 
-$sql = "SELECT * FROM users WHERE userId = '$id'";
-$result = mysqli_query($mysqli,$sql);
-$profile_result = mysqli_fetch_assoc($result);
-if($profile_result['userFriends'] != ''){
-    $friends_array = explode(',', $profile_result['userFriends']);
-    foreach($friends_array as $friends){
-        if($friends == $userId){
-            $friendFound = 1;
-            break;
+    $sql = "SELECT * FROM users WHERE userId = '$id'";
+    $result = mysqli_query($mysqli,$sql);
+    $profile_result = mysqli_fetch_assoc($result);
+    if($profile_result['userFriends'] != ''){
+        $friends_array = explode(',', $profile_result['userFriends']);
+        foreach($friends_array as $friends){
+            if($friends == $userId){
+                $friendFound = 1;
+                break;
+            }
         }
     }
+  } else {
+    header('Location: error_page.php');
+  }
+} else {
+  header('Location: error_page.php');
 }
 ?>
 

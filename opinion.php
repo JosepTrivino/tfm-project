@@ -9,13 +9,17 @@ $error=''; // error message
 $email = $_SESSION['login_user'];
 $id = $_SESSION['login_id'];
 
-if(isset($_GET['id'])){
+if(isset($_GET['id']) && $_GET['id'] != ''){
     $objectId = $_GET["id"];
     $sql = "SELECT * FROM objects WHERE objectId = '$objectId'";
     $result = mysqli_query($mysqli,$sql);
-    $object_result = mysqli_fetch_assoc($result);
-} else{
-
+    if($result && mysqli_num_rows($result) != 0){
+        $object_result = mysqli_fetch_assoc($result);
+    } else {
+        header("location: error_page.php");
+    }
+} else {
+    header("location: error_page.php");
 }
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -25,10 +29,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = mysqli_query ($mysqli, $sql);
     if($result) {
         header("location: {$_SESSION['history']}");
-    } else{
+    } else {
         $error="Opinion couldn't be submitted. Try later.";
     }
-} else{
+} else {
     $_SESSION['history'] = $_SERVER['HTTP_REFERER'];
 }
 ?>

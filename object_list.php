@@ -28,7 +28,7 @@ if(isset($_GET['city']) && isset($_GET['dateIni']) && isset($_GET['dateEnd']) &&
     }
 }
 else{
-    $error = 'Values are not correct';
+    header("location: error_page.php");
 }
 
 ?>
@@ -52,7 +52,7 @@ else{
     <script src="applications/okayNav/js/jquery.okayNav.js"></script>
 </head>
 <body>
-<!--     <header id="header" class="okayNav-header">
+     <header id="header" class="okayNav-header">
         <a class="okayNav-header__logo">
            <img src="images/logo.jpg" alt="Logo Icon"  height="50" width="50">
         </a>
@@ -65,7 +65,7 @@ else{
                 <li><a href="includes/logout.php">Close session</a></li>
             </ul>
         </nav>
-    </header> -->
+    </header>
     <main>
         <div class="div-outer" style="max-width: 800px;">
             <div class="div-inner">

@@ -36,52 +36,50 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-if(isset($_GET['id'])){
+if(isset($_GET['id']) && $_GET['id'] != ''){
     $object_id=validate_parameter($mysqli,$_GET['id']);
     $sql = "SELECT * FROM objects WHERE objectId = '$object_id'";
     $result = mysqli_query($mysqli,$sql);
-    $object_result = mysqli_fetch_assoc($result);
-
-    $sql_opinions = "SELECT COALESCE(sum(score), 0) AS total_score, COUNT(*) AS total_opinions FROM opinions WHERE objectId = $object_id";
-    $opinions_result = mysqli_query($mysqli,$sql_opinions);
-    $opinions_result = mysqli_fetch_assoc($opinions_result); 
-    $total_opinions = $opinions_result["total_opinions"];
-    if($total_opinions == 0){
-        $total_score = "-";
-        $error_total_opinions = 'No opinions found';
-    } else{
-        $total_score = round($opinions_result["total_score"] / $total_opinions, 1);
-    }
-
-    if(isset($_GET['dateIni']) && isset($_GET['dateEnd'])){
-        $dates_found = 'S';
-        $date_ini=validate_parameter($mysqli,$_GET['dateIni']);
-        $date_end=validate_parameter($mysqli,$_GET['dateEnd']);
-
-        $sql_people = "SELECT * FROM visits WHERE objectId = '$object_id' and userId = '$id' and (((visitStart between STR_TO_DATE('$date_ini', '%d/%m/%Y') and STR_TO_DATE('$date_end', '%d/%m/%Y') or visitEnd between STR_TO_DATE('$date_ini', '%d/%m/%Y') and STR_TO_DATE('$date_end', '%d/%m/%Y')) or (STR_TO_DATE('$date_ini', '%d/%m/%Y') between visitStart and VisitEnd) or (STR_TO_DATE('$date_end', '%d/%m/%Y') between visitStart and visitEnd)))";
-        $people_result = mysqli_query($mysqli,$sql_people);
-        if(mysqli_num_rows($people_result) > 0){
-            $error_already_signon = 'You have already signed on';
-            $dates_found = 'N';
+    if($result && mysqli_num_rows($result) != 0){
+        $object_result = mysqli_fetch_assoc($result);
+        $sql_opinions = "SELECT COALESCE(sum(score), 0) AS total_score, COUNT(*) AS total_opinions FROM opinions WHERE objectId = $object_id";
+        $opinions_result = mysqli_query($mysqli,$sql_opinions);
+        $opinions_result = mysqli_fetch_assoc($opinions_result); 
+        $total_opinions = $opinions_result["total_opinions"];
+        if($total_opinions == 0){
+            $total_score = "-";
+            $error_total_opinions = 'No opinions found';
+        } else {
+            $total_score = round($opinions_result["total_score"] / $total_opinions, 1);
         }
-
-        $sql_people = "SELECT * FROM visits WHERE objectId = '$object_id' and (((visitStart between STR_TO_DATE('$date_ini', '%d/%m/%Y') and STR_TO_DATE('$date_end', '%d/%m/%Y') or visitEnd between STR_TO_DATE('$date_ini', '%d/%m/%Y') and STR_TO_DATE('$date_end', '%d/%m/%Y')) or (STR_TO_DATE('$date_ini', '%d/%m/%Y') between visitStart and VisitEnd) or (STR_TO_DATE('$date_end', '%d/%m/%Y') between visitStart and visitEnd)))";
-        $people_result = mysqli_query($mysqli,$sql_people);
-        $total_people = mysqli_num_rows($people_result);
-        if($total_people > 0){
-            $people_found = 'S';
-        } else{
-            $error_travelers = 'No one will be there during these days';
+        if(isset($_GET['dateIni']) && isset($_GET['dateEnd'])){
+            $dates_found = 'S';
+            $date_ini=validate_parameter($mysqli,$_GET['dateIni']);
+            $date_end=validate_parameter($mysqli,$_GET['dateEnd']);
+            $sql_people = "SELECT * FROM visits WHERE objectId = '$object_id' and userId = '$id' and (((visitStart between STR_TO_DATE('$date_ini', '%d/%m/%Y') and STR_TO_DATE('$date_end', '%d/%m/%Y') or visitEnd between STR_TO_DATE('$date_ini', '%d/%m/%Y') and STR_TO_DATE('$date_end', '%d/%m/%Y')) or (STR_TO_DATE('$date_ini', '%d/%m/%Y') between visitStart and VisitEnd) or (STR_TO_DATE('$date_end', '%d/%m/%Y') between visitStart and visitEnd)))";
+            $people_result = mysqli_query($mysqli,$sql_people);
+            if(mysqli_num_rows($people_result) > 0){
+                $error_already_signon = 'You have already signed on';
+                $dates_found = 'N';
+            }
+            $sql_people = "SELECT * FROM visits WHERE objectId = '$object_id' and (((visitStart between STR_TO_DATE('$date_ini', '%d/%m/%Y') and STR_TO_DATE('$date_end', '%d/%m/%Y') or visitEnd between STR_TO_DATE('$date_ini', '%d/%m/%Y') and STR_TO_DATE('$date_end', '%d/%m/%Y')) or (STR_TO_DATE('$date_ini', '%d/%m/%Y') between visitStart and VisitEnd) or (STR_TO_DATE('$date_end', '%d/%m/%Y') between visitStart and visitEnd)))";
+            $people_result = mysqli_query($mysqli,$sql_people);
+            $total_people = mysqli_num_rows($people_result);
+            if($total_people > 0){
+                $people_found = 'S';
+            } else {
+                $error_travelers = 'No one will be there during these days';
+            }
+        } else {
+            $error_dates = 'To show this information select the dates';
         }
-    } else{
-        $error_dates = 'To show this information select the dates';
-
+    } else {
+        header("location: error_page.php");
     }
 }
-else{
-    $error = 'Values are not correct';
+else {
+    header("location: error_page.php");
 }
-
 ?>
 
 <!doctype html>
@@ -103,7 +101,7 @@ else{
     <script src="applications/okayNav/js/jquery.okayNav.js"></script>
 </head>
 <body>
-<!--     <header id="header" class="okayNav-header">
+     <header id="header" class="okayNav-header">
         <a class="okayNav-header__logo">
            <img src="images/logo.jpg" alt="Logo Icon"  height="50" width="50">
         </a>
@@ -116,7 +114,7 @@ else{
                 <li><a href="includes/logout.php">Close session</a></li>
             </ul>
         </nav>
-    </header> -->
+    </header>
     <main>
         <div class="div-outer" style="max-width: 800px;">
             <div class="div-inner">
