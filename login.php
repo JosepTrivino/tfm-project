@@ -8,23 +8,10 @@
   $error=''; // error message
 
   if($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email=validate_parameter($mysqli,$_POST['email']);
-    $password=validate_parameter($mysqli,$_POST['password']); 
-
-    $sql = "SELECT userId FROM users WHERE userEmail = '$email' and userPass = '".md5($password)."'";
-    $result = mysqli_query($mysqli,$sql);
-    $count =  mysqli_num_rows($result);
-    $result_fetch = mysqli_fetch_assoc($result);
-
-    if($count == 1) {
-      session_start();
-      $_SESSION['login_user'] = $email;
-      $_SESSION['login_id'] = $result_fetch["userId"];
-      header("location: search.php");
-      }else {
-        $error = "Incorrect email or password";
-      }
-   }
+    $email = validate_parameter($mysqli,$_POST['email']);
+    $password = validate_parameter($mysqli,$_POST['password']); 
+    $error = login_select($mysqli, $email, $password);
+  }
 ?>
 
 <!DOCTYPE html>

@@ -5,37 +5,15 @@
   $error=''; // error message
 
   if($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email=validate_parameter($mysqli,$_POST['email']);
-    $password=validate_parameter($mysqli,$_POST['password']);
-    $name=validate_parameter($mysqli,$_POST['name']);
-    $lastname=validate_parameter($mysqli,$_POST['lastname']);
-    $dateofbirth=validate_parameter($mysqli,$_POST['dateofbirth']);
-    $gender=validate_parameter($mysqli,$_POST['gender']);
+    $email = validate_parameter($mysqli,$_POST['email']);
+    $password = validate_parameter($mysqli,$_POST['password']);
+    $name = validate_parameter($mysqli,$_POST['name']);
+    $lastname = validate_parameter($mysqli,$_POST['lastname']);
+    $dateofbirth = validate_parameter($mysqli,$_POST['dateofbirth']);
+    $gender = validate_parameter($mysqli,$_POST['gender']);
 
-    //Check if the user exists
-    $sql = "SELECT userId FROM users WHERE userEmail = '$email'";
-    $result = mysqli_query($mysqli,$sql);
-    $count = mysqli_num_rows($result);
-    $result_fetch = mysqli_fetch_assoc($result);
-    if($count == 0) { 
-      $sql = "INSERT INTO users (userEmail,userPass,userName,userLastName,userDBirth,userGender,userImage,userFriends) VALUES ('$email','".md5($password)."','$name','$lastname', STR_TO_DATE('$dateofbirth', '%d/%m/%Y'),'$gender','images/profile',',')";
-      $result = mysqli_query ($mysqli, $sql);
-      if($result) {
-        session_start();
-        $sql = "SELECT userId FROM users WHERE userEmail = '$email'";
-        $result = mysqli_query($mysqli,$sql);
-        $result_fetch = mysqli_fetch_assoc($result);
-        $_SESSION['login_user'] = $email;
-        $_SESSION['login_id'] = $result_fetch["userId"];
-        header("location: search.php");
-      }
-      else{
-        $error = "Unexpected error"; 
-      }
-    }
-    else {
-     $error = "User already exists in the database"; 
-    }
+    $error = insert_user($mysqli, $email, $password, $name, $lastname, $dateofbirth, $gender);
+
   }
 ?>
 

@@ -8,9 +8,7 @@ include('includes/functions.php');
 $email = $_SESSION['login_user'];
 $id = $_SESSION['login_id'];
 
-$sql = "SELECT * FROM users WHERE userId = '$id'";
-$result = mysqli_query($mysqli,$sql);
-$profile_result = mysqli_fetch_assoc($result);
+$profile_result = select_user_id($mysqli, $id);
 ?>
 
 <!doctype html>

@@ -23,9 +23,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
   }
 }
 
-$sql = "SELECT * FROM users WHERE userId = '$id'";
-$result = mysqli_query($mysqli,$sql);
-$profile_result = mysqli_fetch_assoc($result);
+$profile_result = select_user_id($mysqli, $id);
 
 $sql = "SELECT * FROM visits WHERE userId = '$id' ORDER BY visitStart DESC";
 $result = mysqli_query($mysqli,$sql);

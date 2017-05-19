@@ -6,7 +6,7 @@ include('includes/variables.php');
 include('includes/functions.php');
 
 $error=''; // error message
-$errorUpload=''; // error message
+$error_upload=''; // error message
 $success=''; // success message
 $email = $_SESSION['login_user'];
 $id = $_SESSION['login_id'];
@@ -22,48 +22,20 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
   $target_file="";
 
   if($_FILES["imageupload"]["name"] != ""){
-    $target_dir = "upload_pictures/";
-    $target_file = $target_dir . basename($_FILES["imageupload"]["name"]);
-    $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
-    $check = getimagesize($_FILES["imageupload"]["tmp_name"]);
-    $uploadOk = 1;
-    if($check !== false) {
-      $uploadOk = 1;
-    } else {
-      $uploadOk = 0;
-    }
-    if ($_FILES["imageupload"]["size"] > 500000) {
-      $uploadOk = 0;
-    }
-    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" ) {
-      $uploadOk = 0;
-    }
-    if ($uploadOk == 0) {
-      $errorUpload = "Sorry, your image was not uploaded.";
-    } else {
-      if (move_uploaded_file($_FILES["imageupload"]["tmp_name"], $target_file)) {
-        $sql = "UPDATE users SET userImage='$target_file' WHERE userId='$id'";
-        $result = mysqli_query ($mysqli, $sql);
-      } else {
-        $errorUpload = "Sorry, there was an error uploading your file.";
-      }
-    }
+    $error_upload = update_profile_image($mysqli,$id,$_FILES["imageupload"]);
   }
 
-  $sql = "UPDATE users SET userName='$name', userLastName='$lastname', userDBirth=STR_TO_DATE('$dateofbirth', '%d/%m/%Y'), userGender='$gender', userCountry='$country', userCity='$city', userDescription='$information' WHERE userId='$id'";
-  $result = mysqli_query ($mysqli, $sql);
+  $result = update_user($mysqli, $id, $name, $lastname, $dateofbirth, $gender, $country, $city, $information);
   if($result) {
     $success = "The information has been updated";
-  }
-  else{
+  } else {
     $error = "Unexpected error"; 
   }
 }
 
-$sql = "SELECT * FROM users WHERE userId = '$id'";
-$result = mysqli_query($mysqli,$sql);
-$profile_result = mysqli_fetch_assoc($result);
+$profile_result = select_user_id($mysqli, $id);
 $date = date_format(date_create($profile_result["userDBirth"]),"d/m/Y");
+
 ?>
 <!doctype html>
 <html>
@@ -171,7 +143,7 @@ $date = date_format(date_create($profile_result["userDBirth"]),"d/m/Y");
                 <div class="item-profile">
                   <label for="imageupload" >Upload image</label>
                   <input type="file" name="imageupload" id="imageupload">
-                  <div class="error"><?php echo $errorUpload; ?></div>
+                  <div class="error"><?php echo $error_upload; ?></div>
                 </div>
                 <br style="clear:both;" />
               </section>
