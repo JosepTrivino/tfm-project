@@ -65,7 +65,7 @@ $profile_result = mysqli_fetch_assoc($result);
           if ($profile_result['userFriends'] != ','){
             $friends_array = explode(',', $profile_result['userFriends']);
         ?>
-          <div id="container-friends">
+          <div class="container-friends">
           <?php
             foreach($friends_array as $friends){
               $sql_friend = "SELECT userId, userName, userLastName, userImage FROM users WHERE userId = '$friends'";

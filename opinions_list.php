@@ -21,20 +21,6 @@ $people_found ='N';
 $dates_found ='N';
 $total_people = 0;
 
-if($_SERVER["REQUEST_METHOD"] == "POST") {
-    $object_id_post=validate_parameter($mysqli,$_GET['id']);
-    $user_id_post=validate_parameter($mysqli,$id);
-    $date_ini_post=validate_parameter($mysqli,$_GET['dateIni']);
-    $date_end_post=validate_parameter($mysqli,$_GET['dateEnd']);
-    $sql = "INSERT INTO visits (userId, objectId, visitStart, visitEnd) VALUES ('$user_id_post', '$object_id_post',STR_TO_DATE('$date_ini_post', '%d/%m/%Y'),STR_TO_DATE('$date_end_post', '%d/%m/%Y'))";
-    $result = mysqli_query($mysqli,$sql);
-    if($result) {
-        $success_post = "You have successfully signed on";
-    }
-    else{
-        $error_post = "Unexpected error. Try again later."; 
-    }
-}
 
 if(isset($_GET['id'])){
     $object_id=validate_parameter($mysqli,$_GET['id']);
@@ -89,7 +75,7 @@ else{
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Object profile</title>
+    <title>Opinions list</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <link rel="stylesheet" href="applications/bootstrap/css/bootstrap.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -120,10 +106,9 @@ else{
     <main>
         <div class="div-outer" style="max-width: 800px;">
             <div class="div-inner">
-                <div class="error"><?php echo $error; ?></div>
                 <div style="text-align: center" class="div-title">
                     <p class="float-right btn-score"><?php echo $total_score; ?></p>
-                    <h1><?php echo $object_result["objectName"];?></h1>
+                    <h1>Opinions of <?php echo $object_result["objectName"];?></h1>
                     <a class="btn" href="opinion.php?id=<?php echo $object_result["objectId"];?>">Give an opinion</a> 
                 </div>
                 <div style="margin-bottom: 40px; margin-top: 40px" class="control-group">
@@ -139,91 +124,24 @@ else{
                     <button class="btn" onclick="validate()" type="Submit" align="right">SEARCH</button>
                 </div>
                 <div id="valid-dates" class="error" hidden>Invalid dates</div>
-                <div class="error"><?php echo $error_post; ?></div>
-                <div class="success"><?php echo $success_post; ?></div>
-                <hr/>
-                <div class="vertical-line">
-                    <a class="link margin-line" href="#description">Description</a>
-                </div>
-                <div class="vertical-line">
-                    <a class="link margin-line" href="#opinions">Opinions</a>
-                </div>
-                <div class="vertical-line">
-                    <a class="link margin-line" href="#travelers">Travelers</a>
-                </div>
-                <div class="vertical-line">
-                    <a class="link margin-line" href="#price">Price</a>
-                </div>
-                <div style="display:inline-block;">
-                    <a class="link margin-line" href="#signon">Sign on</a>
-                </div>
                 <hr/>
                 <div>
-                    <h3 id="description">Description</h3>
-                    <p> <?php echo $object_result["objectText"];?></p>
-                </div>
-                <hr/>
-                <div>
-                    <h3 id="opinions">Opinions <?php echo " (".$total_opinions.")";?></h3>
-                    <div class="error"><?php echo $error_total_opinions; ?></div>
                     <?php 
-                        if($total_opinions > 0){
-                            $sql_opinions_show = "SELECT * FROM opinions WHERE objectId = '$object_id' ORDER BY opinionDate DESC LIMIT 2";
-                            $opinions_result_show = mysqli_query($mysqli,$sql_opinions_show);
-                            while ($opinions_result = mysqli_fetch_assoc($opinions_result_show)){
-                                $date = date_format(date_create($opinions_result["opinionDate"]),"d/m/Y");
-                                $user_id = $opinions_result['userId'];
-                                $sql_user = "SELECT userName FROM users WHERE userId = $user_id";
-                                $result_user = mysqli_query($mysqli,$sql_user);
-                                $result_user = mysqli_fetch_assoc($result_user);
+                        $sql_opinions_show = "SELECT * FROM opinions WHERE objectId = '$object_id' ORDER BY opinionDate DESC";
+                        $opinions_result_show = mysqli_query($mysqli,$sql_opinions_show);
+                        while ($opinions_result = mysqli_fetch_assoc($opinions_result_show)){
+                            $date = date_format(date_create($opinions_result["opinionDate"]),"d/m/Y");
+                            $user_id = $opinions_result['userId'];
+                            $sql_user = "SELECT userName FROM users WHERE userId = $user_id";
+                            $result_user = mysqli_query($mysqli,$sql_user);
+                            $result_user = mysqli_fetch_assoc($result_user);
                     ?>
                     <p class="btn-score-small"><?php echo $opinions_result["score"]; ?></p>
                     <p class="inline-element"><a class="link" href="profile_user_information.php?id=<?php echo $opinions_result["userId"];?>"><?php echo $result_user["userName"];?></a>, <?php echo $date;?></p>
                     <p><?php echo $opinions_result["opinionText"];?></p>
+                    <hr/>
                     <?php } ?>
-                            <a class="link link-login" align="right" href="opinions_list.php?id=<?php echo $object_id;?>">Show more</a>
-                    <?php } ?>
                 </div>
-                <hr/>
-                <div>
-                    <h3 id="travelers" class="container-friends">Travelers <?php echo " (".$total_people.")";?></h3>
-                    <div class="error"><?php echo $error_travelers; ?></div>
-                    <div class="error"><?php echo $error_dates; ?></div>
-                    <?php
-                        if($people_found == 'S'){
-                            while ($people_list = mysqli_fetch_assoc($people_result)){
-                                $user_id = $people_list["userId"];
-                                $sql_user = "SELECT userId, userName, userLastName, userImage FROM users WHERE userId = $user_id";
-                                $user_result = mysqli_query($mysqli,$sql_user);
-                                $user_result = mysqli_fetch_assoc($user_result);
-                    ?>
-                                <a href="profile_user_information.php?id=<?php echo $user_result["userId"];?>" class="link">
-                                    <figure>
-                                        <img src="<?php echo $user_result["userImage"];?>" alt="Profile Image"  height="70" width="70" class="profile-image">
-                                        <figcaption><?php echo $user_result["userName"]; echo " "; echo $user_result["userLastName"];?></figcaption>
-                                    </figure>
-                                </a>                                
-                            <?php } ?>
-                        <?php } ?>
-                </div>
-                <hr/>
-                <div>
-                    <h3 id="price">Price</h3>
-                    <p>From <?php echo $object_result["objectPrice"];?> €</p>
-                </div>
-                <hr/>
-                <div style="margin-bottom: 40px;">
-                    <h3 id="signon">Sign on</h3>
-                    <div class="error"><?php echo $error_dates; ?></div>
-                    <div class="error"><?php echo $error_already_signon; ?></div>
-                    <?php if ($dates_found == 'S'){ ?>
-                        <p class="inline-element"> From <strong><?php echo $date_ini;?></strong> to <strong><?php echo $date_end?></strong> </p>
-                        <form class="float-right" style="display:inline-block" action="" method="post">
-                          <button class="btn btn-user" onclick="validate()" type="Submit" align="right">Sign on</button>
-                        </form>
-                    <?php } ?>  
-                </div>
-
             </div>
         </div> 
     </main>

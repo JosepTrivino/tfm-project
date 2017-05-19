@@ -8,33 +8,27 @@ $error=''; // error message
 
 $email = $_SESSION['login_user'];
 $id = $_SESSION['login_id'];
-$userId = $_GET["id"];
 
-$sql = "SELECT * FROM users WHERE userId = '$userId'";
-$result = mysqli_query($mysqli,$sql);
-$user_result = mysqli_fetch_assoc($result);
+if(isset($_GET['id'])){
+    $objectId = $_GET["id"];
+    $sql = "SELECT * FROM objects WHERE objectId = '$objectId'";
+    $result = mysqli_query($mysqli,$sql);
+    $object_result = mysqli_fetch_assoc($result);
+} else{
 
-$sql = "SELECT * FROM users WHERE userId = '$id'";
-$result = mysqli_query($mysqli,$sql);
-$profile_result = mysqli_fetch_assoc($result); 
+}
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
-    $rxId=validate_parameter($mysqli,$_POST['userRxId']);
-    $txId=validate_parameter($mysqli,$_POST['userTxId']);
-    $message=validate_parameter($mysqli,$_POST['message']);
-    $title=validate_parameter($mysqli,$_POST['title']);
-    if($_SESSION['login_id'] == $txId){
-        $sql = "INSERT INTO messages (userTxId,userRxId,messageTitle,messageText) VALUES ('$txId','$rxId','$title','$message')";
-        $result = mysqli_query ($mysqli, $sql);
-        if($result) {
-            header("location: {$_SESSION['history']}");
-        }
-        else{
-            $error="Message couldn't be send. Try later.";
-        }
+    $rate=validate_parameter($mysqli,$_POST['rate']);
+    $opinion=validate_parameter($mysqli,$_POST['opinion']);
+    $sql = "INSERT INTO opinions (userId,objectId,score,opinionText) VALUES ('$id','$objectId','$rate','$opinion')";
+    $result = mysqli_query ($mysqli, $sql);
+    if($result) {
+        header("location: {$_SESSION['history']}");
+    } else{
+        $error="Opinion couldn't be submitted. Try later.";
     }
-}
-else{
+} else{
     $_SESSION['history'] = $_SERVER['HTTP_REFERER'];
 }
 ?>
@@ -44,7 +38,7 @@ else{
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>New message</title>
+    <title>New opinion</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <link rel="stylesheet" href="applications/bootstrap/css/bootstrap.css">
     <script src="applications/bootstrap/js/bootstrap.js"></script>
@@ -77,25 +71,19 @@ else{
             <div class="div-inner">
                 <form action="" method="post">
                     <div class="div-title">
-                        <h1 style="text-align: center">New message</h1>
+                        <h1 style="text-align: center">Opinion <?php echo $object_result["objectName"];?></h1>
                     </div>
                     <div class="control-group">
-                        <p ><strong>From:</strong> <?php echo $profile_result["userName"]; echo " "; echo $profile_result["userLastName"];?></p>
-                        <p><strong>To:</strong> <a href="profile_user_information.php?id=<?php echo $user_result["userId"];?>" class="link"> <?php echo $user_result["userName"]; echo " "; echo $user_result["userLastName"];?></a></p>
-                        <input type="hidden" name="userRxId" value="<?php echo $user_result["userId"]?>"/>
-                        <input type="hidden" name="userTxId" id="userTxId" value="<?php echo $profile_result["userId"];?>"/>
+                        <p class="inline-element"><strong>Rating from 1-10:</strong></p>
+                        <input class="inline-element" type="text" name="rate" id="rate" min="1" max="10" required style="max-width: 40px"></input>
                     </div>
                     <div class="control-group">
-                        <p><strong>Title:</strong></p>
-                        <input type="text" name="title" id="title" required style="width:50%"></input>
-                    </div>
-                    <div class="control-group">
-                        <p><strong>Message:</strong></p>
-                        <textarea rows=5 style="width:100%" name="message" id="message" required></textarea>
+                        <p><strong>Opinion:</strong></p>
+                        <textarea rows=5 style="width:100%" name="opinion" id="opinion" required></textarea>
                     </div>
                     <div class="button-div">
                         <div class="control-group error"><?php echo $error; ?></div>
-                        <button class="btn" type="Submit" align="right">SEND</button>
+                        <button class="btn" type="Submit" align="right">SUBMIT</button>
                     </div>
                 </form>
             </div>

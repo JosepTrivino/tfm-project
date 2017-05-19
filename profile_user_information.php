@@ -7,10 +7,10 @@ include('includes/functions.php');
 
 $email = $_SESSION['login_user'];
 $id = $_SESSION['login_id'];
-$userId = $_GET["id"];
 $friendFound = 0;
 $error = '';
 $success = '';
+
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     if($_POST['option'] == "add"){
@@ -37,22 +37,31 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-$sql = "SELECT * FROM users WHERE userId = '$userId'";
-$result = mysqli_query($mysqli,$sql);
-$user_result = mysqli_fetch_assoc($result);
-$date = date_format(date_create($user_result["userDBirth"]),"d/m/Y");
+if(isset($_GET["id"])){
+  $userId = $_GET["id"];
+  if($userId != $id){
+    $sql = "SELECT * FROM users WHERE userId = '$userId'";
+    $result = mysqli_query($mysqli,$sql);
+    $user_result = mysqli_fetch_assoc($result);
+    $date = date_format(date_create($user_result["userDBirth"]),"d/m/Y");
 
-$sql = "SELECT * FROM users WHERE userId = '$id'";
-$result = mysqli_query($mysqli,$sql);
-$profile_result = mysqli_fetch_assoc($result);
-if($profile_result['userFriends'] != ''){
-    $friends_array = explode(',', $profile_result['userFriends']);
-    foreach($friends_array as $friends){
-        if($friends == $userId){
-            $friendFound = 1;
-            break;
+    $sql = "SELECT * FROM users WHERE userId = '$id'";
+    $result = mysqli_query($mysqli,$sql);
+    $profile_result = mysqli_fetch_assoc($result);
+    if($profile_result['userFriends'] != ''){
+        $friends_array = explode(',', $profile_result['userFriends']);
+        foreach($friends_array as $friends){
+            if($friends == $userId){
+                $friendFound = 1;
+                break;
+            }
         }
     }
+  } else{
+    header('Location: profile_information.php');
+  }
+} else {
+  while(1);
 }
 ?>
 

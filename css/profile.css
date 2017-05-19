@@ -34,10 +34,6 @@ textarea {
  	float:left;
  }
 
- #container-friends {
-    text-align: left;
-}
-
 a, figure {
     display: inline-block;
 }
@@ -60,9 +56,4 @@ figure {
  	width: 600px;
  	margin: 20px auto;
 
- }
-
- .float-right{
- 	display:inline-block;
- 	float:right;
  }

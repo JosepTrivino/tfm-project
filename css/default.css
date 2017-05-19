@@ -150,10 +150,36 @@ select:focus, input:focus, textarea:focusx {
   line-height: 3;
 }
 
+.btn-score-small{
+  text-align: center;
+  display: inline-block;
+  border: 2px solid transparent;
+  background: #FF9933;
+  color: #555;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  text-shadow: none;
+  border-radius: 3px;
+  box-shadow: none;
+  width: 30px;
+  max-height: 30px;
+  line-height: 1.5;
+}
+
 .inline-element{
   display: inline-block;
 }
 
 .clickable-object{
   cursor: pointer;
+}
+
+.float-right{
+  display:inline-block;
+  float:right;
+}
+
+.container-friends {
+  text-align: left;
 }

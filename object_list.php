@@ -93,15 +93,16 @@ else{
             while($object_result = mysqli_fetch_assoc($result)){
                 $object_id = $object_result["objectId"];
                 $object_price = $object_result["objectPrice"];
-                $sql_people = "SELECT * FROM visits WHERE objectId = '$object_id' and userId != '$id' and  ((visitStart between STR_TO_DATE('$date_ini', '%d/%m/%Y') and STR_TO_DATE('$date_end', '%d/%m/%Y')) or (visitEnd between STR_TO_DATE('$date_ini', '%d/%m/%Y') and STR_TO_DATE('$date_end', '%d/%m/%Y')) or (STR_TO_DATE('$date_ini', '%d/%m/%Y') between visitStart and VisitEnd) or (STR_TO_DATE('$date_end', '%d/%m/%Y') between visitStart and visitEnd))";
+                $sql_people = "SELECT COUNT(*) AS total_visits FROM visits WHERE objectId = '$object_id' and (((visitStart between STR_TO_DATE('$date_ini', '%d/%m/%Y') and STR_TO_DATE('$date_end', '%d/%m/%Y')) or (visitEnd between STR_TO_DATE('$date_ini', '%d/%m/%Y') and STR_TO_DATE('$date_end', '%d/%m/%Y')) or (STR_TO_DATE('$date_ini', '%d/%m/%Y') between visitStart and VisitEnd) or (STR_TO_DATE('$date_end', '%d/%m/%Y') between visitStart and visitEnd)))";
                 $people_result = mysqli_query($mysqli,$sql_people);
-                $num_persons = mysqli_num_rows($people_result);
+                $people_result = mysqli_fetch_assoc($people_result);
+                $num_persons = $people_result["total_visits"];
                 if ($num_persons == 0){  
                     $people_string = '(No one will be there during these days)';
                 } elseif($num_persons == 1){
                     $people_string = '(1  traveler will be there during these days)';
                 } else {
-                    $people_string = '($num_persons travelers will be there during these days)';
+                    $people_string = '('.$num_persons.' travelers will be there during these days)';
                 }
 
                 $sql_opinions = "SELECT COALESCE(sum(score), 0) AS total_score, COUNT(*) AS total_opinions FROM opinions WHERE objectId = $object_id";

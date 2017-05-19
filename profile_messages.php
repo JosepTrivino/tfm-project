@@ -74,12 +74,22 @@ $result = mysqli_query($mysqli,$sql);
                   <?php if($messages_result['userTxId'] != $_SESSION['login_id']){ ?>
                     <a class="link float-right" href="message.php?id=<?php echo $messages_result['userTxId'];?>">Answer</a>
                   <?php } ?>
-                  <?php if($messages_result['userTxId'] == $_SESSION['login_id']){ ?>
-                        <p><strong>From:</strong> <?php echo$messages_result["userTxName"];?></p>
-                        <p><strong>To:</strong> <a class="link" href="profile_user_information.php?id=<?php echo $messages_result["userRxId"];?>"> <?php echo $messages_result["userRxName"];?></a></p>
-                  <?php } else{ ?>
-                        <p><strong>From:</strong> <a class="link" href="profile_user_information.php?id=<?php echo $messages_result["userTxId"];?>"> <?php echo $messages_result["userTxName"];?></a></p>
-                        <p><strong>To:</strong> <?php echo $messages_result["userRxName"];?></p>               
+                  <?php if($messages_result['userTxId'] == $_SESSION['login_id']){ 
+                    $user_id = $messages_result['userRxId'];
+                    $sql_user = "SELECT userName FROM users WHERE userId = $user_id";
+                    $result_user = mysqli_query($mysqli,$sql_user);
+                    $result_user = mysqli_fetch_assoc($result_user);
+                    ?>
+                        <p><strong>From:</strong> <?php echo $profile_result["userName"];?></p>
+                        <p><strong>To:</strong> <a class="link" href="profile_user_information.php?id=<?php echo $messages_result["userRxId"];?>"> <?php echo $result_user["userName"];?></a></p>
+                  <?php } else{ 
+                    $user_id = $messages_result['userTxId'];
+                    $sql_user = "SELECT userName FROM users WHERE userId = $user_id";
+                    $result_user = mysqli_query($mysqli,$sql_user);
+                    $result_user = mysqli_fetch_assoc($result_user);
+                    ?>
+                        <p><strong>From:</strong> <a class="link" href="profile_user_information.php?id=<?php echo $messages_result["userTxId"];?>"> <?php echo $result_user["userName"];?></a></p>
+                        <p><strong>To:</strong> <?php echo $profile_result["userName"];?></p>               
                   <?php } ?>
                         <p><strong>Date:</strong> <?php echo $date;?></p>
                         <p><strong>Title:</strong> <?php echo $messages_result["messageTitle"];?></p>

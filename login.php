@@ -22,7 +22,7 @@
       $_SESSION['login_id'] = $result_fetch["userId"];
       header("location: search.php");
       }else {
-        $error = "Email o contrasenya incorrectes";
+        $error = "Incorrect email or password";
       }
    }
 ?>

@@ -120,9 +120,13 @@ if($profile_result['userFriends'] != ''){
               if(mysqli_num_rows($result_opinions) > 0){
                 while($opinions_result = mysqli_fetch_assoc($result_opinions)){
                   $date = date_format(date_create($opinions_result["opinionDate"]),"d/m/Y");
+                  $object_id = $opinions_result['objectId'];
+                  $sql_object = "SELECT objectName FROM objects WHERE objectId = $object_id";
+                  $result_object = mysqli_query($mysqli,$sql_object);
+                  $result_object = mysqli_fetch_assoc($result_object);
           ?>
                   <div>
-                  <p><strong>Name:</strong> <a class="link" href="profile_user.php?id=<?php echo $opinions_result["objectId"];?>"> <?php echo $opinions_result["objectName"];?></a></p>
+                  <p><strong>Name:</strong> <a class="link" href="object_profile.php?id=<?php echo $opinions_result["objectId"];?>"> <?php echo $result_object["objectName"];?></a></p>
                   <p><strong>Rating:</strong> <?php echo $opinions_result["score"];?></p>
                   <p><strong>Date:</strong> <?php echo $date;?></p>
                   <textarea readonly="readonly" class="blocked" rows="5" cols="50" style="width:600px;"><?php echo $opinions_result["opinionText"];?></textarea>

@@ -34,3 +34,13 @@ input[type="text"] {
 .margin-line {
   margin-right: 10px;
 }
+
+a, figure {
+    display: inline-block;
+}
+
+figcaption,
+figure {
+  display: block;
+  text-align: center;
+}
