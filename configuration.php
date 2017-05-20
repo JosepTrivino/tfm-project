@@ -13,9 +13,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
     $password2 = $_POST['password2'];
     if($password == $password2) {
-        $password = md5($_POST['password']);
-        $sql = "UPDATE users SET userPass='$password' WHERE userId='$id'";
-        $result = mysqli_query ($mysqli, $sql);
+        $result = update_password($mysqli, $id, $password);
         if($result) {
             $success = "The password has been updated";
         }

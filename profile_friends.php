@@ -66,15 +66,13 @@ $profile_result = select_user_id($mysqli, $id);
           <div class="container-friends">
           <?php
             foreach($friends_array as $friends){
-              $sql_friend = "SELECT userId, userName, userLastName, userImage FROM users WHERE userId = '$friends'";
-              $friends_result = mysqli_query($mysqli,$sql_friend);
-              if(mysqli_num_rows($friends_result) > 0){
-                $friends_result = mysqli_fetch_assoc($friends_result);
+              $friends_result = select_user_id($mysqli,$friends);
+              if($friends_result != 0){
           ?>
                 <a href="profile_user_information.php?id=<?php echo $friends_result["userId"];?>" class="link">
                     <figure>
                         <img src="<?php echo $friends_result["userImage"];?>" alt="Profile Image"  height="70" width="70" class="profile-image">
-                        <figcaption><?php echo $friends_result["userName"]; echo " "; echo $friends_result["userLastName"];?></figcaption>
+                        <figcaption><?php echo $friends_result["userName"];?></figcaption>
                     </figure>
                 </a>
            <?php } ?>

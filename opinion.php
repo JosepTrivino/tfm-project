@@ -10,9 +10,7 @@ $email = $_SESSION['login_user'];
 $id = $_SESSION['login_id'];
 
 if(isset($_GET['id']) && $_GET['id'] != ''){
-    $objectId = $_GET["id"];
-    $sql = "SELECT * FROM objects WHERE objectId = '$objectId'";
-    $result = mysqli_query($mysqli,$sql);
+    $result = select_object_id($mysqli,$_GET["id"]);
     if($result && mysqli_num_rows($result) != 0){
         $object_result = mysqli_fetch_assoc($result);
     } else {
@@ -25,13 +23,7 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     $rate=validate_parameter($mysqli,$_POST['rate']);
     $opinion=validate_parameter($mysqli,$_POST['opinion']);
-    $sql = "INSERT INTO opinions (userId,objectId,score,opinionText) VALUES ('$id','$objectId','$rate','$opinion')";
-    $result = mysqli_query ($mysqli, $sql);
-    if($result) {
-        header("location: {$_SESSION['history']}");
-    } else {
-        $error="Opinion couldn't be submitted. Try later.";
-    }
+    $error=insert_opinion($mysqli, $id, $objectId, $rate, $opinion);
 } else {
     $_SESSION['history'] = $_SERVER['HTTP_REFERER'];
 }

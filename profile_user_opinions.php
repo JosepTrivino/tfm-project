@@ -7,56 +7,44 @@ include('includes/functions.php');
 
 $email = $_SESSION['login_user'];
 $id = $_SESSION['login_id'];
-$friendFound = 0;
+$friend_found = 0;
 $error = '';
 $success = '';
 
-if($_SERVER["REQUEST_METHOD"] == "POST") {
-    if($_POST['option'] == "add"){
-        $concat = $userId.",";
-        $sql = "UPDATE users SET userFriends = CONCAT(userFriends, '$concat') WHERE userId = '$id'";
-        $result = mysqli_query($mysqli,$sql);
-        if($result) {
-            $success = "The user has been added to your friend list.";
-        } else {
-            $error = "Unexpected error. Try again later."; 
-        }
-    } else {
-        $concat = ",".$userId.",";
-        $sql = "UPDATE users SET userFriends = REPLACE(userFriends, '$concat', ',') WHERE userId = '$id'"; 
-        $result = mysqli_query($mysqli,$sql);
-        if($result) {
-            $success = "The user has been deleted from your friend list.";
-        } else {
-            $error = "Unexpected error. Try again later."; 
-        }
-    }
-}
-
 if(isset($_GET['id']) && $_GET['id'] != ''){
   $userId = $_GET["id"];
-  $sql = "SELECT * FROM users WHERE userId = '$userId'";
-  $result = mysqli_query($mysqli,$sql);
-  if($result && mysqli_num_rows($result) != 0){
-    $user_result = mysqli_fetch_assoc($result);
 
-    $sql = "SELECT * FROM opinions WHERE userId = '$userId'";
-    $result_opinions = mysqli_query($mysqli,$sql);
-
-    $sql = "SELECT * FROM users WHERE userId = '$id'";
-    $result = mysqli_query($mysqli,$sql);
-    $profile_result = mysqli_fetch_assoc($result);
-    if($profile_result['userFriends'] != ''){
-        $friends_array = explode(',', $profile_result['userFriends']);
-        foreach($friends_array as $friends){
-            if($friends == $userId){
-                $friendFound = 1;
-                break;
-            }
+  if($_SERVER["REQUEST_METHOD"] == "POST") {
+    if(update_user_friends($mysqli, $id, $userId, $_POST['option'])) {
+        if($_POST['option'] == "add"){
+          $success = "The user has been added to your friend list.";
+        } else {
+          $success = "The user has been deleted from your friend list.";
         }
+    } else {
+      $error = "Unexpected error. Try again later."; 
+    }
+  }
+  if($userId != $id){
+    $user_result = select_user_id($mysqli, $userId);
+    if($user_result != 0){
+      $date = date_format(date_create($user_result["userDBirth"]),"d/m/Y");
+      $profile_result = select_user_id($mysqli, $id);
+      $result_opinions = select_opinion_id($mysqli,$userId);
+      if($profile_result['userFriends'] != ''){
+          $friends_array = explode(',', $profile_result['userFriends']);
+          foreach($friends_array as $friends){
+              if($friends == $userId){
+                  $friend_found = 1;
+                  break;
+              }
+          }
+      }
+    } else {
+      header('Location: error_page.php');
     }
   } else {
-    header('Location: error_page.php');
+    header('Location: profile_information.php');
   }
 } else {
   header('Location: error_page.php');
@@ -107,7 +95,7 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
       <div style="margin-top:0px; margin-left: 20px" class="success"><?php echo $success; ?></div>
       <div style="margin-top:0px; margin-left: 20px" class="error"><?php echo $error; ?></div>
         <form action="" method="post">
-        <?php if($friendFound == 0){ ?>
+        <?php if($friend_found == 0){ ?>
           <button class="btn btn-user" name="option" value="add" type="Submit" align="right">Add friend</button>
         <?php } else{ ?>
           <button class="btn btn-user" name="option" value="delete" type="Submit" align="right">Delete friend</button>
@@ -125,9 +113,7 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
               if(mysqli_num_rows($result_opinions) > 0){
                 while($opinions_result = mysqli_fetch_assoc($result_opinions)){
                   $date = date_format(date_create($opinions_result["opinionDate"]),"d/m/Y");
-                  $object_id = $opinions_result['objectId'];
-                  $sql_object = "SELECT objectName FROM objects WHERE objectId = $object_id";
-                  $result_object = mysqli_query($mysqli,$sql_object);
+                  $result_object = select_object_id($mysqli,$opinions_result['objectId']);
                   $result_object = mysqli_fetch_assoc($result_object);
           ?>
                   <div>

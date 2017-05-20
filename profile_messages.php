@@ -7,14 +7,11 @@ include('includes/functions.php');
 
 $error=''; // error message
 $success=''; // success message
-$errorNoMessages='';
 $email = $_SESSION['login_user'];
 $id = $_SESSION['login_id'];
 
 $profile_result = select_user_id($mysqli, $id);
-
-$sql = "SELECT * FROM messages WHERE userRxId = '$id' || userTxId = '$id' ORDER BY messageDate DESC";
-$result = mysqli_query($mysqli,$sql);
+$result = select_messages_by_id($mysqli,$id);
 ?>
 <!doctype html>
 <html>
@@ -73,18 +70,12 @@ $result = mysqli_query($mysqli,$sql);
                     <a class="link float-right" href="message.php?id=<?php echo $messages_result['userTxId'];?>">Answer</a>
                   <?php } ?>
                   <?php if($messages_result['userTxId'] == $_SESSION['login_id']){ 
-                    $user_id = $messages_result['userRxId'];
-                    $sql_user = "SELECT userName FROM users WHERE userId = $user_id";
-                    $result_user = mysqli_query($mysqli,$sql_user);
-                    $result_user = mysqli_fetch_assoc($result_user);
+                    $result_user = select_user_id($mysqli,$messages_result['userRxId']);
                     ?>
                         <p><strong>From:</strong> <?php echo $profile_result["userName"];?></p>
                         <p><strong>To:</strong> <a class="link" href="profile_user_information.php?id=<?php echo $messages_result["userRxId"];?>"> <?php echo $result_user["userName"];?></a></p>
-                  <?php } else{ 
-                    $user_id = $messages_result['userTxId'];
-                    $sql_user = "SELECT userName FROM users WHERE userId = $user_id";
-                    $result_user = mysqli_query($mysqli,$sql_user);
-                    $result_user = mysqli_fetch_assoc($result_user);
+                  <?php } else { 
+                    $result_user = select_user_id($mysqli,$messages_result['userTxId']);
                     ?>
                         <p><strong>From:</strong> <a class="link" href="profile_user_information.php?id=<?php echo $messages_result["userTxId"];?>"> <?php echo $result_user["userName"];?></a></p>
                         <p><strong>To:</strong> <?php echo $profile_result["userName"];?></p>               
@@ -94,7 +85,7 @@ $result = mysqli_query($mysqli,$sql);
                         <textarea readonly="readonly" class="blocked" rows="5" cols="50" style="width:600px;"><?php echo $messages_result["messageText"];?></textarea>
                     </div><hr>
                 <?php } ?>
-              <?php } else{ ?>
+              <?php } else { ?>
                 <div style="margin-left:20px" class="error">No messages found</div>
               <?php } ?>
         </div>

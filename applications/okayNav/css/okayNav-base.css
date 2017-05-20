@@ -22,6 +22,7 @@ body.okayNav-loaded {
   -webkit-justify-content: space-between;
   -ms-flex-pack: justify;
   justify-content: space-between;
+  border-bottom: 1px solid #555;
 }
 .okayNav:not(.loaded) {
   visibility: hidden;

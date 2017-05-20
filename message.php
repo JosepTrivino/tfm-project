@@ -10,21 +10,15 @@ $email = $_SESSION['login_user'];
 $id = $_SESSION['login_id'];
 
 if(isset($_GET['id']) && $_GET['id'] != ''){
-    $userId = $_GET["id"];
-    $sql = "SELECT * FROM users WHERE userId = '$userId'";
-    $result = mysqli_query($mysqli,$sql);
-    if($result && mysqli_num_rows($result) != 0){
-        $user_result = mysqli_fetch_assoc($result);
-    } else {
+    $user_result = select_user_id($mysqli,$_GET["id"]);
+    if($user_result == 0){
         header("location: error_page.php");
     }
 } else {
     header("location: error_page.php");
 }
 
-$sql = "SELECT * FROM users WHERE userId = '$id'";
-$result = mysqli_query($mysqli,$sql);
-$profile_result = mysqli_fetch_assoc($result); 
+$profile_result = select_user_id($mysqli,$id); 
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     $rxId=validate_parameter($mysqli,$_POST['userRxId']);
@@ -32,16 +26,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $message=validate_parameter($mysqli,$_POST['message']);
     $title=validate_parameter($mysqli,$_POST['title']);
     if($_SESSION['login_id'] == $txId){
-        $sql = "INSERT INTO messages (userTxId,userRxId,messageTitle,messageText) VALUES ('$txId','$rxId','$title','$message')";
-        $result = mysqli_query ($mysqli, $sql);
-        if($result) {
-            header("location: {$_SESSION['history']}");
-        } else {
-            $error="Message couldn't be send. Try later.";
-        }
+        $error = insert_message($mysqli, $txId, $rxId, $title, $message);
     }
-}
-else{
+} else {
     $_SESSION['history'] = $_SERVER['HTTP_REFERER'];
 }
 ?>

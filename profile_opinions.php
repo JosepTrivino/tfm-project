@@ -12,9 +12,7 @@ $email = $_SESSION['login_user'];
 $id = $_SESSION['login_id'];
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
-  $opinionId = $_POST['opinionId'];
-  $sql = "DELETE FROM opinions WHERE opinionId = $opinionId";
-  $result = mysqli_query($mysqli,$sql);
+  $result = delete_opinion($mysqli, $_POST['opinionId']);
   if($result) {
     $success = "The opinion has been deleted.";
   }
@@ -24,9 +22,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $profile_result = select_user_id($mysqli, $id);
-
-$sql = "SELECT * FROM opinions WHERE userId = '$id' ORDER BY opinionDate DESC";
-$result = mysqli_query($mysqli,$sql);
+$result = select_opinion_id($mysqli,$id);
 
 ?>
 <!doctype html>
@@ -81,9 +77,7 @@ $result = mysqli_query($mysqli,$sql);
               if(mysqli_num_rows($result) > 0){
                 while($opinions_result = mysqli_fetch_assoc($result)){
                   $date = date_format(date_create($opinions_result["opinionDate"]),"d/m/Y");
-                  $object_id = $opinions_result['objectId'];
-                  $sql_object = "SELECT objectName FROM objects WHERE objectId = $object_id";
-                  $result_object = mysqli_query($mysqli,$sql_object);
+                  $result_object = select_object_id($mysqli, $opinions_result['objectId']);
                   $result_object = mysqli_fetch_assoc($result_object);
             ?>
                     <div class="div-inner">

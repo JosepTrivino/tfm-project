@@ -26,8 +26,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $user_id_post=validate_parameter($mysqli,$id);
     $date_ini_post=validate_parameter($mysqli,$_GET['dateIni']);
     $date_end_post=validate_parameter($mysqli,$_GET['dateEnd']);
-    $sql = "INSERT INTO visits (userId, objectId, visitStart, visitEnd) VALUES ('$user_id_post', '$object_id_post',STR_TO_DATE('$date_ini_post', '%d/%m/%Y'),STR_TO_DATE('$date_end_post', '%d/%m/%Y'))";
-    $result = mysqli_query($mysqli,$sql);
+    $result = insert_visit($mysqli, $user_id_post, $object_id_post, $date_ini_post, $date_end_post);
     if($result) {
         $success_post = "You have successfully signed on";
     }
@@ -38,32 +37,25 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 if(isset($_GET['id']) && $_GET['id'] != ''){
     $object_id=validate_parameter($mysqli,$_GET['id']);
-    $sql = "SELECT * FROM objects WHERE objectId = '$object_id'";
-    $result = mysqli_query($mysqli,$sql);
+    $result = select_object_id($mysqli,$object_id);
     if($result && mysqli_num_rows($result) != 0){
         $object_result = mysqli_fetch_assoc($result);
-        $sql_opinions = "SELECT COALESCE(sum(score), 0) AS total_score, COUNT(*) AS total_opinions FROM opinions WHERE objectId = $object_id";
-        $opinions_result = mysqli_query($mysqli,$sql_opinions);
-        $opinions_result = mysqli_fetch_assoc($opinions_result); 
-        $total_opinions = $opinions_result["total_opinions"];
+        $total_opinions = count_total_opinions($mysqli, $object_id);
         if($total_opinions == 0){
             $total_score = "-";
             $error_total_opinions = 'No opinions found';
         } else {
-            $total_score = round($opinions_result["total_score"] / $total_opinions, 1);
+            $total_score = round(count_mean_score($mysqli, $object_id) / $total_opinions, 1);
         }
         if(isset($_GET['dateIni']) && isset($_GET['dateEnd'])){
             $dates_found = 'S';
             $date_ini=validate_parameter($mysqli,$_GET['dateIni']);
             $date_end=validate_parameter($mysqli,$_GET['dateEnd']);
-            $sql_people = "SELECT * FROM visits WHERE objectId = '$object_id' and userId = '$id' and (((visitStart between STR_TO_DATE('$date_ini', '%d/%m/%Y') and STR_TO_DATE('$date_end', '%d/%m/%Y') or visitEnd between STR_TO_DATE('$date_ini', '%d/%m/%Y') and STR_TO_DATE('$date_end', '%d/%m/%Y')) or (STR_TO_DATE('$date_ini', '%d/%m/%Y') between visitStart and VisitEnd) or (STR_TO_DATE('$date_end', '%d/%m/%Y') between visitStart and visitEnd)))";
-            $people_result = mysqli_query($mysqli,$sql_people);
-            if(mysqli_num_rows($people_result) > 0){
+            if(select_user_signed($mysqli, $id, $object_id, $date_ini, $date_end) > 0){
                 $error_already_signon = 'You have already signed on';
                 $dates_found = 'N';
             }
-            $sql_people = "SELECT * FROM visits WHERE objectId = '$object_id' and (((visitStart between STR_TO_DATE('$date_ini', '%d/%m/%Y') and STR_TO_DATE('$date_end', '%d/%m/%Y') or visitEnd between STR_TO_DATE('$date_ini', '%d/%m/%Y') and STR_TO_DATE('$date_end', '%d/%m/%Y')) or (STR_TO_DATE('$date_ini', '%d/%m/%Y') between visitStart and VisitEnd) or (STR_TO_DATE('$date_end', '%d/%m/%Y') between visitStart and visitEnd)))";
-            $people_result = mysqli_query($mysqli,$sql_people);
+            $people_result = select_visits($mysqli, $object_id, $date_ini, $date_end);
             $total_people = mysqli_num_rows($people_result);
             if($total_people > 0){
                 $people_found = 'S';
@@ -76,8 +68,7 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
     } else {
         header("location: error_page.php");
     }
-}
-else {
+} else {
     header("location: error_page.php");
 }
 ?>
@@ -166,14 +157,10 @@ else {
                     <div class="error"><?php echo $error_total_opinions; ?></div>
                     <?php 
                         if($total_opinions > 0){
-                            $sql_opinions_show = "SELECT * FROM opinions WHERE objectId = '$object_id' ORDER BY opinionDate DESC LIMIT 2";
-                            $opinions_result_show = mysqli_query($mysqli,$sql_opinions_show);
+                            $opinions_result_show = select_opinions_limit($mysqli, $object_id);
                             while ($opinions_result = mysqli_fetch_assoc($opinions_result_show)){
                                 $date = date_format(date_create($opinions_result["opinionDate"]),"d/m/Y");
-                                $user_id = $opinions_result['userId'];
-                                $sql_user = "SELECT userName FROM users WHERE userId = $user_id";
-                                $result_user = mysqli_query($mysqli,$sql_user);
-                                $result_user = mysqli_fetch_assoc($result_user);
+                                $result_user = select_user_id($mysqli, $opinions_result['userId']);
                     ?>
                     <p class="btn-score-small"><?php echo $opinions_result["score"]; ?></p>
                     <p class="inline-element"><a class="link" href="profile_user_information.php?id=<?php echo $opinions_result["userId"];?>"><?php echo $result_user["userName"];?></a>, <?php echo $date;?></p>
@@ -190,15 +177,12 @@ else {
                     <?php
                         if($people_found == 'S'){
                             while ($people_list = mysqli_fetch_assoc($people_result)){
-                                $user_id = $people_list["userId"];
-                                $sql_user = "SELECT userId, userName, userLastName, userImage FROM users WHERE userId = $user_id";
-                                $user_result = mysqli_query($mysqli,$sql_user);
-                                $user_result = mysqli_fetch_assoc($user_result);
+                                $user_result = select_user_id($mysqli, $people_list['userId']);
                     ?>
                                 <a href="profile_user_information.php?id=<?php echo $user_result["userId"];?>" class="link">
-                                    <figure>
+                                    <figure style="max-width: 100px">
                                         <img src="<?php echo $user_result["userImage"];?>" alt="Profile Image"  height="70" width="70" class="profile-image">
-                                        <figcaption><?php echo $user_result["userName"]; echo " "; echo $user_result["userLastName"];?></figcaption>
+                                        <figcaption><?php echo $user_result["userName"];?></figcaption>
                                     </figure>
                                 </a>                                
                             <?php } ?>

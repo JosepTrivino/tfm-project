@@ -7,14 +7,11 @@ include('includes/functions.php');
 
 $error=''; // error message
 $success=''; // success message
-$errorNoMessages='';
 $email = $_SESSION['login_user'];
 $id = $_SESSION['login_id'];
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
-  $visitId = $_POST['visitId'];
-  $sql = "DELETE FROM visits WHERE visitId = $visitId";
-  $result = mysqli_query($mysqli,$sql);
+  $result = delete_visit($mysqli,$_POST['visitId']);
   if($result) {
     $success = "The visit has been deleted.";
   }
@@ -24,9 +21,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $profile_result = select_user_id($mysqli, $id);
+$result = select_visit_id($mysqli,$id);
 
-$sql = "SELECT * FROM visits WHERE userId = '$id' ORDER BY visitStart DESC";
-$result = mysqli_query($mysqli,$sql);
 ?>
 <!doctype html>
 <html>
@@ -82,9 +78,7 @@ $result = mysqli_query($mysqli,$sql);
                 while($visits_result = mysqli_fetch_assoc($result)){
                   $date_ini = date_format(date_create($visits_result["visitStart"]),"d/m/Y");
                   $date_end = date_format(date_create($visits_result["visitEnd"]),"d/m/Y");
-                  $object_id = $visits_result['objectId'];
-                  $sql_object = "SELECT objectName FROM objects WHERE objectId = $object_id";
-                  $result_object = mysqli_query($mysqli,$sql_object);
+                  $result_object = select_object_id($mysqli,$visits_result['objectId']);
                   $result_object = mysqli_fetch_assoc($result_object);
             ?>
                    <div class="div-inner">
