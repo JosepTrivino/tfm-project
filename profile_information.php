@@ -48,6 +48,10 @@ $date = date_format(date_create($profile_result["userDBirth"]),"d/m/Y");
     <script src="applications/bootstrap/js/bootstrap.js"></script>
     <link rel="stylesheet" href="css/default.css">
     <link rel="stylesheet" href="css/profile.css" >
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="applications/okayNav/css/header.css" media="screen">
     <link rel="stylesheet" href="applications/okayNav/css/normalize.css" media="screen">
     <link rel="stylesheet" href="applications/okayNav/css/okayNav-base.css" media="screen">
@@ -96,7 +100,7 @@ $date = date_format(date_create($profile_result["userDBirth"]),"d/m/Y");
                 </div>
                 <div class="item-profile">
                   <label for="dateofbirth">Date of birth</label>
-                  <input type="text" required name="dateofbirth" pattern="\d{1,2}/\d{1,2}/\d{4}" placeholder="DD/MM/YYYY" value="<?php echo $date;?>" />
+                  <input class="datepicker readonly" type="text" required name="dateofbirth" pattern="\d{1,2}/\d{1,2}/\d{4}" placeholder="DD/MM/YYYY" required value="<?php echo $date;?>" />
                 </div>
                 <div class="item-profile-right">
                   <label for="email">Email</label>
@@ -112,7 +116,7 @@ $date = date_format(date_create($profile_result["userDBirth"]),"d/m/Y");
                       foreach($countries as $code => $country){
                           if($code == $profile_result["userCountry"]){
                               echo '<option value="'.$code.'" selected>'.$country.'</option>';
-                          }else{
+                          } else {
                               echo '<option value="'.$code.'">'.$country.'</option>';
                           }
                       }
@@ -130,7 +134,7 @@ $date = date_format(date_create($profile_result["userDBirth"]),"d/m/Y");
                       foreach($genders as $code => $gender){
                           if($code == $profile_result["userGender"]){
                               echo '<option value="'.$code.'" selected>'.$gender.'</option>';
-                          }else{
+                          } else {
                               echo '<option value="'.$code.'">'.$gender.'</option>';
                           }
                       }
@@ -161,6 +165,17 @@ $date = date_format(date_create($profile_result["userDBirth"]),"d/m/Y");
     </main>
     <script type="text/javascript">
         var navigation = $('#nav-main').okayNav();
+        $(".readonly").keydown(function(e){
+          e.preventDefault();
+        });
+        $( function() {
+          $( ".datepicker" ).datepicker({
+            dateFormat: 'dd/mm/yy',
+            minDate: new Date(1900,1-1,1), maxDate: '-18Y',
+            changeYear: true,
+            changeMonth: true
+          });
+        } );
     </script>
 </body>
 </html>

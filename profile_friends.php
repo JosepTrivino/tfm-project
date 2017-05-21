@@ -86,7 +86,5 @@ $profile_result = select_user_id($mysqli, $id);
     <script type="text/javascript">
       var navigation = $('#nav-main').okayNav();
     </script>
-    <script>
-    </script>
 </body>
 </html>

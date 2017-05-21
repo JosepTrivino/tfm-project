@@ -41,7 +41,7 @@ require( 'includes/headers.php' );
         <div class="div-outer">
             <div class="div-inner">
                 <div style="text-align: center" class="div-title">
-                    <img style="width: 25%; height: 25%;" alt="Error Image" align="center" src="images/error"/>
+                    <img style="width: 25%; height: 25%;" alt="Error Image" align="center" src="images/error.png"/>
                     <h1>Something went wrong. Try again later</h1>
                 </div>
             </div>

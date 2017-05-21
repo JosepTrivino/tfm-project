@@ -11,10 +11,14 @@ require( 'includes/headers.php' );
     <title>Searcher</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <link rel="stylesheet" href="applications/bootstrap/css/bootstrap.css">
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.javascript"></script>
     <script src="applications/bootstrap/js/bootstrap.js"></script>
     <link rel="stylesheet" href="css/default.css">
     <link rel="stylesheet" href="css/searcher.css" >
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="applications/okayNav/css/header.css" media="screen">
     <link rel="stylesheet" href="applications/okayNav/css/normalize.css" media="screen">
     <link rel="stylesheet" href="applications/okayNav/css/okayNav-base.css" media="screen">
@@ -43,6 +47,7 @@ require( 'includes/headers.php' );
                 <div class="div-title">
                     <h1 style="text-align: center">What are you searching for?</h1>
                 </div>
+                <form onSubmit="event.preventDefault(); validate();">
                 <div class="control-group" center="left">
                     <input type="radio" value="0" checked="checked" name="optradio">Hostels</input>
                     <input type="radio" value="1" name="optradio">Activities </input>
@@ -52,29 +57,37 @@ require( 'includes/headers.php' );
                 </div>
                 <div class="control-group" center="left">
                     <label for="ini">From</label>
-                    <input placeholder="DD/MM/YYYY" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="ini" id="ini" required>
+                    <input class="datepicker readonly" placeholder="DD/MM/YYYY" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="ini" id="ini" required>
                     <label for="fin">to</label>
-                    <input placeholder="DD/MM/YYYY" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="end" id="end" required>
+                    <input class="datepicker readonly" placeholder="DD/MM/YYYY" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="end" id="end" required>
                  </div>
                 <div id="valid-dates" class="error" hidden>Invalid dates</div>
                 <div class="button-div">
-                    <button class="btn" onclick="validate()" align="right">SEARCH</button>
+                    <button class="btn" type="Submit" align="right">SEARCH</button>
                 </div>
+                </form>
             </div>
         </div>
     </main>
     <script type="text/javascript">
         var navigation = $('#nav-main').okayNav();
+        $( function() {
+          $( ".datepicker" ).datepicker({
+            dateFormat: 'dd/mm/yy',
+            minDate: 'today'
+          });
+        });
+        $(".readonly").keydown(function(e){
+            e.preventDefault();
+        });
         function validate() {
             var date_ini = $('#ini').val();
             var date_end = $('#end').val();
-            var today = new Date();
-            alert(today);
-            if ($.datepicker.parseDate('dd/mm/yy', date_ini) > $.datepicker.parseDate('dd/mm/yy', date_end) && date_ini < today) {
+            if ($.datepicker.parseDate('dd/mm/yy', date_ini) > $.datepicker.parseDate('dd/mm/yy', date_end)) {
                 $('#valid-dates').show();
             }
             else{
-                window.location = "object_list?city=" + $('#city').val() + "&dateIni=" + $('#ini').val() + "&dateEnd=" + $('#end').val() + "&type=" + $('input[name=optradio]:checked').val();
+                window.location = "object_list.php?city=" + $('#city').val() + "&dateIni=" + $('#ini').val() + "&dateEnd=" + $('#end').val() + "&type=" + $('input[name=optradio]:checked').val();
             }
         }
     </script>

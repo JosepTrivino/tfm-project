@@ -26,6 +26,10 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <link rel="stylesheet" href="applications/bootstrap/css/bootstrap.css">
   <script src="applications/bootstrap/js/bootstrap.js"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <link rel="stylesheet" href="css/default.css">
   <link rel="stylesheet" href="css/login.css">
 </head>
@@ -50,7 +54,7 @@
           <input type="password" name="password" placeholder="Password" required>
         </div>
         <div class="control-group">
-          <input placeholder="Date of birth (DD/MM/YYYY)" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="dateofbirth" id="date" required>
+          <input class="datepicker readonly" placeholder="Date of birth (DD/MM/YYYY)" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="dateofbirth" id="date" required>
         </div>
         <div class="control-group">
           <select name="gender" required>
@@ -66,5 +70,18 @@
       <a class="link link-login" href="help.php" align="right">Help</a>
     </div>
   </div>
+  <script type="text/javascript">
+    $(".readonly").keydown(function(e){
+      e.preventDefault();
+    });
+    $( function() {
+      $( ".datepicker" ).datepicker({
+        dateFormat: 'dd/mm/yy',
+        minDate: new Date(1900,1-1,1), maxDate: '-18Y',
+        changeYear: true,
+        changeMonth: true
+      });
+    } );
+  </script>
 </body>
 </html>

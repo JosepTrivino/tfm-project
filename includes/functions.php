@@ -127,11 +127,11 @@
 	    $count = mysqli_num_rows($result);
 	    $result_fetch = mysqli_fetch_assoc($result);
 	    if($count == 0) { 
-	      $sql = "INSERT INTO users (userEmail,userPass,userName,userLastName,userDBirth,userGender,userImage,userFriends) VALUES ('$email','".md5($password)."','$name','$lastname', STR_TO_DATE('$dateofbirth', '%d/%m/%Y'),'$gender','images/profile',',')";
+	      $sql = "INSERT INTO users (userEmail,userPass,userName,userLastName,userDBirth,userGender,userImage,userFriends) VALUES ('$email','".md5($password)."','$name','$lastname', STR_TO_DATE('$dateofbirth', '%d/%m/%Y'),'$gender','images/profile.png',',')";
 	      $result = mysqli_query ($mysqli, $sql);
 	      if($result) {
 	        session_start();
-	        $result = search_user_email($mysqli, $email);
+	        $result = select_user_email($mysqli, $email);
 	        $result_fetch = mysqli_fetch_assoc($result);
 	        $_SESSION['login_user'] = $email;
 	        $_SESSION['login_id'] = $result_fetch["userId"];
@@ -199,12 +199,12 @@
 	}
 
 	function delete_opinion($mysqli, $id){
-  		$sql = "DELETE FROM opinions WHERE opinionId = $opinionId";
+  		$sql = "DELETE FROM opinions WHERE opinionId = $id";
  		return mysqli_query($mysqli,$sql);
 	}
 
 	function delete_visit($mysqli, $id){
-  		$sql = "DELETE FROM visits WHERE visitId = $visitId";
+  		$sql = "DELETE FROM visits WHERE visitId = $id";
  		return mysqli_query($mysqli,$sql);
 	}
 

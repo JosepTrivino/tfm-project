@@ -183,3 +183,7 @@ select:focus, input:focus, textarea:focusx {
 .container-friends {
   text-align: left;
 }
+
+input[data-readonly] {
+  pointer-events: none;
+}

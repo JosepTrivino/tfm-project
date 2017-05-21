@@ -3,7 +3,7 @@ session_start();
 
 if ( defined( 'RESTRICTED' ) ) {
     if ( !isset( $_SESSION['login_id'] ) ) {
-      header( 'Location: login.php' );
+      header( 'Location: index.php' );
       exit();
     }
 }

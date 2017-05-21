@@ -41,6 +41,10 @@ if(isset($_GET['city']) && isset($_GET['dateIni']) && isset($_GET['dateEnd']) &&
     <script src="applications/bootstrap/js/bootstrap.js"></script>
     <link rel="stylesheet" href="css/default.css">
     <link rel="stylesheet" href="css/searcher.css" >
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="applications/okayNav/css/header.css" media="screen">
     <link rel="stylesheet" href="applications/okayNav/css/normalize.css" media="screen">
     <link rel="stylesheet" href="applications/okayNav/css/okayNav-base.css" media="screen">
@@ -71,16 +75,18 @@ if(isset($_GET['city']) && isset($_GET['dateIni']) && isset($_GET['dateEnd']) &&
                     <p style="display: inline-block;"><?php echo "(".mysqli_num_rows($result). " found)";?> </p>
                 </div>
                 <div class="control-group">
+                <form onSubmit="event.preventDefault(); validate();">
                     <div>
                         <input type="radio" value="0" checked="checked" name="optradio">Hostels</input>
                         <input type="radio" value="1" name="optradio">Activities </input>
                     </div>
                     <input style="max-width: 295px;" type="search" name="city" id="city" placeholder="Search city" required>
                     <label style="display:inline-block; margin-left: 10px" for="ini">From</label>
-                    <input style="max-width: 120px;" placeholder="DD/MM/YYYY" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="ini" id="ini" required>
+                    <input class="datepicker readonly" style="max-width: 120px;" placeholder="DD/MM/YYYY" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="ini" id="ini" required>
                     <label style="display:inline-block; margin-left: 10px" for="end">To</label>
-                    <input style="max-width: 120px;" placeholder="DD/MM/YYYY" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="end" id="end" required>
-                    <button class="btn" onclick="validate()" type="Submit" align="right">SEARCH</button>
+                    <input class="datepicker readonly" style="max-width: 120px;" placeholder="DD/MM/YYYY" pattern="\d{1,2}/\d{1,2}/\d{4}" type="text" name="end" id="end" required>
+                    <button class="btn" type="Submit" align="right">SEARCH</button>
+                </form>
                 </div>
                 <div id="valid-dates" class="error" hidden>Invalid dates</div>
             </div>
@@ -134,7 +140,16 @@ if(isset($_GET['city']) && isset($_GET['dateIni']) && isset($_GET['dateEnd']) &&
     <script type="text/javascript">
         var navigation = $('#nav-main').okayNav();
         $(".clickable-object").click(function (evt) {
-            window.location = "object_profile?id=" + $(this).attr('id') + "&dateIni=" + "<?php echo $date_ini; ?>" + "&dateEnd=" + "<?php echo $date_end; ?>";
+            window.location = "object_profile.php?id=" + $(this).attr('id') + "&dateIni=" + "<?php echo $date_ini; ?>" + "&dateEnd=" + "<?php echo $date_end; ?>";
+        });
+        $( function() {
+          $( ".datepicker" ).datepicker({
+            dateFormat: 'dd/mm/yy',
+            minDate: 'today'
+          });
+        });
+        $(".readonly").keydown(function(e){
+            e.preventDefault();
         });
         function validate() {
             var date_ini = $('#ini').val();
@@ -143,7 +158,7 @@ if(isset($_GET['city']) && isset($_GET['dateIni']) && isset($_GET['dateEnd']) &&
                 $('#valid-dates').show();
             }
             else{
-                window.location = "object_list?city=" + $('#city').val() + "&dateIni=" + $('#ini').val() + "&dateEnd=" + $('#end').val() + "&type=" + $('input[name=optradio]:checked').val();
+                window.location = "object_list.php?city=" + $('#city').val() + "&dateIni=" + $('#ini').val() + "&dateEnd=" + $('#end').val() + "&type=" + $('input[name=optradio]:checked').val();
             }
         }
     </script>

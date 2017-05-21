@@ -23,7 +23,7 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     $rate=validate_parameter($mysqli,$_POST['rate']);
     $opinion=validate_parameter($mysqli,$_POST['opinion']);
-    $error=insert_opinion($mysqli, $id, $objectId, $rate, $opinion);
+    $error=insert_opinion($mysqli, $id, $_GET['id'], $rate, $opinion);
 } else {
     $_SESSION['history'] = $_SERVER['HTTP_REFERER'];
 }
