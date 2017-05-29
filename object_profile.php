@@ -81,12 +81,10 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
     <title>Object profile</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <link rel="stylesheet" href="applications/bootstrap/css/bootstrap.css">
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="applications/bootstrap/js/bootstrap.js"></script>
     <link rel="stylesheet" href="css/default.css">
     <link rel="stylesheet" href="css/searcher.css" >
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="applications/okayNav/css/header.css" media="screen">
@@ -97,9 +95,7 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
 </head>
 <body>
      <header id="header" class="okayNav-header">
-        <a class="okayNav-header__logo">
-           <img src="images/logo.jpg" alt="Logo Icon"  height="50" width="50">
-        </a>
+        <a href="<?php echo  $_SERVER['HTTP_REFERER'];?>"><img src="images/back.png" alt="Back button" style="max-width: 50px; margin-top:0px; margin-left: 20px;"/></a>
         <nav role="navigation" id="nav-main" class="okayNav">
             <ul>
                 <li><a href="profile_information.php">Profile</a></li>
@@ -113,6 +109,15 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
     <main>
         <div class="div-outer" style="max-width: 800px;">
             <div class="div-inner">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a class="link" href="search.php">Search</a></li>
+              <?php if(isset($_GET['dateIni']) && isset($_GET['dateEnd'])){ ?>
+                <li class="breadcrumb-item"><a class="link" href="<?php echo  $_SERVER['HTTP_REFERER'] ?>">List</a></li>
+              <?php } else { ?>
+                <li class="breadcrumb-item"><a class="link" href="search.php">List</a></li>
+              <?php } ?> 
+              <li class="breadcrumb-item active">Profile</li>
+            </ol>
                 <div class="error"><?php echo $error; ?></div>
                 <div style="text-align: center" class="div-title">
                     <p class="float-right btn-score"><?php echo $total_score; ?></p>
@@ -141,6 +146,9 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
                     <a class="link margin-line" href="#description">Description</a>
                 </div>
                 <div class="vertical-line">
+                    <a class="link margin-line" href="#location">Location</a>
+                </div>
+                <div class="vertical-line">
                     <a class="link margin-line" href="#opinions">Opinions</a>
                 </div>
                 <div class="vertical-line">
@@ -156,6 +164,35 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
                 <div>
                     <h3 id="description">Description</h3>
                     <p> <?php echo $object_result["objectText"];?></p>
+                    <div class="row">
+                        <div class="col-sm-4 col-md-4">
+                            <div class="thumbnail">
+                                <a href='<?php echo $object_result["objectImage1"];?>'>
+                                    <img src='<?php echo $object_result["objectImage1"];?>' alt="Imatge" style="max-width:200px">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <div class="thumbnail">
+                                <a href='<?php echo $object_result["objectImage2"];?>'>
+                                    <img src='<?php echo $object_result["objectImage2"];?>' alt="Imatge" style="max-width:200px">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <div class="thumbnail">
+                                <a href='<?php echo $object_result["objectImage3"];?>'>
+                                    <img src='<?php echo $object_result["objectImage3"];?>' alt="Imatge" style="max-width:200px">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
+                <div>
+                    <h3 id="description">Location</h3>
+                    <p> Situated in <?php echo $object_result["objectAddress"];?></p>
+                    <div id="map"></div>
                 </div>
                 <hr/>
                 <div>
@@ -180,19 +217,23 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
                     <h3 id="travelers" class="container-friends">Travelers <?php echo " (".$total_people.")";?></h3>
                     <div class="error"><?php echo $error_travelers; ?></div>
                     <div class="error"><?php echo $error_dates; ?></div>
+                    <div class="row">
                     <?php
                         if($people_found == 'S'){
                             while ($people_list = mysqli_fetch_assoc($people_result)){
                                 $user_result = select_user_id($mysqli, $people_list['userId']);
                     ?>
-                                <a href="profile_user_information.php?id=<?php echo $user_result["userId"];?>" class="link">
-                                    <figure style="max-width: 100px">
-                                        <img src="<?php echo $user_result["userImage"];?>" alt="Profile Image"  height="70" width="70" class="profile-image">
-                                        <figcaption><?php echo $user_result["userName"];?></figcaption>
-                                    </figure>
-                                </a>                                
+                                <div class="col-6 col-sm-3 ">
+                                    <div class="thumbnail">
+                                        <a href="profile_user_information.php?id=<?php echo $user_result["userId"];?>" class="link">
+                                            <img src="<?php echo $user_result["userImage"];?>" alt="Profile Image"  height="70" width="70" >
+                                            <p align="center"><?php echo $user_result["userName"];?></p>
+                                        </a> 
+                                    </div>
+                                </div>                               
                             <?php } ?>
                         <?php } ?>
+                    </div>
                 </div>
                 <hr/>
                 <div>
@@ -237,5 +278,19 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
             }
         }
     </script>
+    <script>
+      function initMap() {
+        var uluru = {lat: <?php echo $object_result["latitude"]?>, lng: <?php echo $object_result["longitude"]?>};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 15,
+          center: uluru
+        });
+        var marker = new google.maps.Marker({
+          position: uluru,
+          map: map
+        });
+      }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOBgOkPD9mznhj_PlUf6BPQRkcIZ-16bs&callback=initMap"></script>
 </body>
 </html>

@@ -11,6 +11,10 @@ $friend_found = 0;
 $error = '';
 $success = '';
 
+if (strpos($_SERVER['HTTP_REFERER'], "profile_user_") == false && strpos($_SERVER['HTTP_REFERER'], "message") == false){
+  $_SESSION['history_profile'] = $_SERVER['HTTP_REFERER'];
+}
+
 if(isset($_GET['id']) && $_GET['id'] != ''){
   $userId = $_GET["id"];
 
@@ -71,9 +75,7 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
 <body>
 
      <header id="header" class="okayNav-header">
-        <a class="okayNav-header__logo">
-           <img src="images/logo.jpg" alt="Logo Icon"  height="50" width="50">
-        </a>
+        <a href="<?php echo  $_SESSION['history_profile'];?>"><img src="images/back.png" alt="Back button" style="max-width: 50px; margin-top:0px; margin-left: 20px;"/></a>
         <nav role="navigation" id="nav-main" class="okayNav">
             <ul>
                 <li><a href="profile_information.php">Profile </a></li>
@@ -83,10 +85,10 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
                 <li><a href="includes/logout.php">Close session</a></li>
             </ul>
         </nav>
-    </header> 
+    </header>
     <main style="margin-top: 5rem; background-color: white">
       <div style="display:flex;align-items:center; background-color: #3498DB">
-          <img src="<?php echo $user_result["userImage"]?>" alt="Profile Image"  height="70" width="70" class="profile-image"> </img>
+          <img src="<?php echo $user_result["userImage"];?>" alt="Profile Image"  height="70" width="70" class="profile-image"> </img>
           <h1><?php echo $user_result["userName"]; echo " "; echo $user_result["userLastName"];?></h1>
           <br style="clear:both;" />
       </div>

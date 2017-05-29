@@ -48,10 +48,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <header id="header" class="okayNav-header">
-        <a class="okayNav-header__logo">
-           <img src="images/logo.jpg" alt="Logo Icon"  height="50" width="50">
-        </a>
-
+        <a href="<?php echo  $_SERVER['HTTP_REFERER'];?>"><img src="images/back.png" alt="Back button" style="max-width: 50px; margin-top:0px; margin-left: 20px;"/></a>
         <nav role="navigation" id="nav-main" class="okayNav">
             <ul>
                 <li><a href="profile_information.php">Profile</a></li>

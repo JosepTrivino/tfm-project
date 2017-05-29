@@ -44,3 +44,10 @@ figure {
   display: block;
   text-align: center;
 }
+
+.icon {
+  position: relative;
+  font-size: 30px;
+  top: 6px;
+  left: 5px;
+}

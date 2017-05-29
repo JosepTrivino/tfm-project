@@ -88,7 +88,7 @@ $result = select_messages_by_id($mysqli,$id);
               <?php } else { ?>
                 <div style="margin-left:20px" class="error">No messages found</div>
               <?php } ?>
-        </div>
+        </div><hr>
     </main>
     <script type="text/javascript">
       var navigation = $('#nav-main').okayNav();

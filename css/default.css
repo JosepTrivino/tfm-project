@@ -187,3 +187,8 @@ select:focus, input:focus, textarea:focusx {
 input[data-readonly] {
   pointer-events: none;
 }
+
+#map {
+  height: 300px;
+  width: 100%;
+ }

@@ -37,14 +37,13 @@ if(isset($_GET['city']) && isset($_GET['dateIni']) && isset($_GET['dateEnd']) &&
     <title>List</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <link rel="stylesheet" href="applications/bootstrap/css/bootstrap.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="applications/bootstrap/js/bootstrap.js"></script>
     <link rel="stylesheet" href="css/default.css">
     <link rel="stylesheet" href="css/searcher.css" >
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="applications/okayNav/css/header.css" media="screen">
     <link rel="stylesheet" href="applications/okayNav/css/normalize.css" media="screen">
     <link rel="stylesheet" href="applications/okayNav/css/okayNav-base.css" media="screen">
@@ -69,6 +68,10 @@ if(isset($_GET['city']) && isset($_GET['dateIni']) && isset($_GET['dateEnd']) &&
     <main>
         <div class="div-outer" style="max-width: 800px;">
             <div class="div-inner">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a class="link" href="search.php">Search</a></li>
+                  <li class="breadcrumb-item active">List</li>
+                </ol>
                 <div class="error"><?php echo $error; ?></div>
                 <div style="text-align: center" class="div-title">
                     <h1 style="display: inline-block;"><?php echo $which; echo " "; echo $city;?></h1>
@@ -122,7 +125,7 @@ if(isset($_GET['city']) && isset($_GET['dateIni']) && isset($_GET['dateEnd']) &&
                     <div id=<?php echo $object_id; ?> class="div-inner clickable-object">
                         <h3 class="inline-element" style="margin-bottom: 5px"><?php echo $object_result["objectName"]; ?></h3>
                         <p class="inline-element"><?php echo $people_string; ?></p>
-                        <p><?php echo $object_result["objectAddress"]; ?></p>
+                        <p><?php echo $object_result["objectAddress"]; ?> <a name="map" href="http://www.google.com/maps/place/<?php echo $object_result["latitude"]?>,<?php echo $object_result["longitude"]?>" class="material-icons icon link" style="margin-bottom: 20px; max-width: 160px; text-decoration: none">map</a></p>
                         <p class="btn-score"><?php echo $total_score; ?></p>
                         <p class="inline-element"><?php echo $total_opinions; ?></p>
                         <p class="inline-element" style="line-height: 3; float: right" align="right"><?php echo "From $object_price €"; ?></p>

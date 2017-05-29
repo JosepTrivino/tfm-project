@@ -30,7 +30,6 @@ $profile_result = select_user_id($mysqli, $id);
     <script src="applications/okayNav/js/jquery.okayNav.js"></script>
 </head>
 <body>
-
     <header id="header" class="okayNav-header">
         <a class="okayNav-header__logo">
            <img src="images/logo.jpg" alt="Logo Icon"  height="50" width="50">
@@ -63,25 +62,27 @@ $profile_result = select_user_id($mysqli, $id);
           if ($profile_result['userFriends'] != ','){
             $friends_array = explode(',', $profile_result['userFriends']);
         ?>
-          <div class="container-friends">
+          <div class="row" style="margin: 20px;">
           <?php
             foreach($friends_array as $friends){
               $friends_result = select_user_id($mysqli,$friends);
               if($friends_result != 0){
           ?>
-                <a href="profile_user_information.php?id=<?php echo $friends_result["userId"];?>" class="link">
-                    <figure>
-                        <img src="<?php echo $friends_result["userImage"];?>" alt="Profile Image"  height="70" width="70" class="profile-image">
-                        <figcaption><?php echo $friends_result["userName"];?></figcaption>
-                    </figure>
-                </a>
+                <div class="col-6 col-sm-3 ">
+                  <div class="thumbnail">
+                    <a href="profile_user_information.php?id=<?php echo $friends_result["userId"];?>" class="link">
+                      <img src="<?php echo $friends_result["userImage"];?>" alt="Profile Image"  height="70" width="70" >
+                      <p align="center"><?php echo $friends_result["userName"];?></p>
+                    </a> 
+                  </div>
+                </div>   
            <?php } ?>
           <?php } ?>
           </div>
           <?php }else{?>
             <div style="margin-left:20px" class="error">No friends found</div>
           <?php } ?>
-      </div>
+      </div><hr>
     </main>
     <script type="text/javascript">
       var navigation = $('#nav-main').okayNav();
