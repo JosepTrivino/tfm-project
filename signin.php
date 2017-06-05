@@ -36,6 +36,7 @@
 <body>
   <div class="login">
     <div class="login-screen">
+      <a onClick="history.go(-1);" href="#"><img src="images/back.png" alt="Back button" style="max-width: 40px"/></a>
       <div class="login-title">
         <h1>Create a new user</h1>
       </div>

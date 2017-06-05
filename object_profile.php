@@ -95,7 +95,7 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
 </head>
 <body>
      <header id="header" class="okayNav-header">
-        <a href="<?php echo  $_SERVER['HTTP_REFERER'];?>"><img src="images/back.png" alt="Back button" style="max-width: 50px; margin-top:0px; margin-left: 20px;"/></a>
+        <a onClick="history.go(-1);" href="#"><img src="images/back.png" alt="Back button" style="max-width: 50px; margin-top:0px; margin-left: 20px;"/></a>
         <nav role="navigation" id="nav-main" class="okayNav">
             <ul>
                 <li><a href="profile_information.php">Profile</a></li>
@@ -112,7 +112,7 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a class="link" href="search.php">Search</a></li>
               <?php if(isset($_GET['dateIni']) && isset($_GET['dateEnd'])){ ?>
-                <li class="breadcrumb-item"><a class="link" href="<?php echo  $_SERVER['HTTP_REFERER'] ?>">List</a></li>
+                <li class="breadcrumb-item"><a class="link" href="#" onClick="history.go(-1);">List</a></li>
               <?php } else { ?>
                 <li class="breadcrumb-item"><a class="link" href="search.php">List</a></li>
               <?php } ?> 
@@ -190,7 +190,7 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
                 </div>
                 <hr/>
                 <div>
-                    <h3 id="description">Location</h3>
+                    <h3 id="location">Location</h3>
                     <p> Situated in <?php echo $object_result["objectAddress"];?></p>
                     <div id="map"></div>
                 </div>

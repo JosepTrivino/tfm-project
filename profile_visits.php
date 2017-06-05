@@ -94,7 +94,7 @@ $result = select_visit_id($mysqli,$id);
                 <div class="error">No visits found</div>
             <?php } ?>
 
-        </div>
+        </div><hr>
     </main>
     <script type="text/javascript">
       var navigation = $('#nav-main').okayNav();

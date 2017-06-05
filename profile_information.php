@@ -160,7 +160,7 @@ $date = date_format(date_create($profile_result["userDBirth"]),"d/m/Y");
               <button class="btn " type="Submit">Update information</button>
               <br style="clear:both;" />
             </form>
-        </div>
+        </div><hr>
     </main>
     <script type="text/javascript">
         var navigation = $('#nav-main').okayNav();

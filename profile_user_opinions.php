@@ -71,7 +71,7 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
 </head>
 <body>
      <header id="header" class="okayNav-header">
-        <a href="<?php echo  $_SESSION['history_profile'];?>"><img src="images/back.png" alt="Back button" style="max-width: 50px; margin-top:0px; margin-left: 20px;"/></a>
+        <a onClick="history.go(-1);" href="#"><img src="images/back.png" alt="Back button" style="max-width: 50px; margin-top:0px; margin-left: 20px;"/></a>
         <nav role="navigation" id="nav-main" class="okayNav">
             <ul>
                 <li><a href="profile_information.php">Profile </a></li>
@@ -118,15 +118,15 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
                   <p><strong>Rating:</strong> <?php echo $opinions_result["score"];?></p>
                   <p><strong>Date:</strong> <?php echo $date;?></p>
                   <textarea readonly="readonly" class="blocked" rows="5" cols="50" style="width:600px;"><?php echo $opinions_result["opinionText"];?></textarea>
-                  </div>
+                  </div><hr>
           <?php
                 } 
               } else{
           ?>
                   <div class="control-group error">No opinions found</div>
           <?php } ?>
-        </div><hr>
-      </div>
+        </div>
+      </div><hr>
     </main>
     <script type="text/javascript">
       var navigation = $('#nav-main').okayNav();

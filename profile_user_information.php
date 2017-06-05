@@ -11,10 +11,6 @@ $friend_found = 0;
 $error = '';
 $success = '';
 
-if (strpos($_SERVER['HTTP_REFERER'], "profile_user_") == false && strpos($_SERVER['HTTP_REFERER'], "message") == false){
-  $_SESSION['history_profile'] = $_SERVER['HTTP_REFERER'];
-}
-
 if(isset($_GET['id']) && $_GET['id'] != ''){
   $userId = $_GET["id"];
 
@@ -73,9 +69,8 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
     <script src="applications/okayNav/js/jquery.okayNav.js"></script>
 </head>
 <body>
-
      <header id="header" class="okayNav-header">
-        <a href="<?php echo  $_SESSION['history_profile'];?>"><img src="images/back.png" alt="Back button" style="max-width: 50px; margin-top:0px; margin-left: 20px;"/></a>
+        <a onClick="history.go(-1);" href="#"><img src="images/back.png" alt="Back button" style="max-width: 50px; margin-top:0px; margin-left: 20px;"/></a>
         <nav role="navigation" id="nav-main" class="okayNav">
             <ul>
                 <li><a href="profile_information.php">Profile </a></li>
@@ -137,13 +132,17 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
           </section>
           <section>
             <div class="item-profile">
-              <label for="country">Contry</label>
+              <label for="country">Country</label>
               <?php
+              if($profile_result["userCountry"] == ""){
+                echo '<input style="max-width:420px; width:100%;" readonly="readonly" class="blocked" type="text" name="country" id="country" value="">';
+              } else {
                 foreach($countries as $code => $country){
                   if($code == $profile_result["userCountry"]){
-                    echo '<input style="max-width:420px; width:100%;" readonly="readonly" class="blocked" type="text" name="city" id="city" value="'.$country.'">';
+                    echo '<input style="max-width:420px; width:100%;" readonly="readonly" class="blocked" type="text" name="country" id="country" value="'.$country.'">';
                   }
                 }
+              }
               ?>
             </div>
             <div class="item-profile">
@@ -155,12 +154,12 @@ if(isset($_GET['id']) && $_GET['id'] != ''){
           <section>
             <div class="item-profile">
               <label for="information" >My information</label>
-              <textarea readonly="readonly" class="blocked" rows="5" cols="50" name="information" id="information"><?php echo "string"; $profile_result["userDescription"];?></textarea>
+              <textarea readonly="readonly" class="blocked" rows="5" cols="50" name="information" id="information"><?php $profile_result["userDescription"];?></textarea>
             </div>
             <br style="clear:both;" />
           </section>
           <br style="clear:both;" />
-        </div>
+        </div><hr>
       </div>
     </main>
     <script type="text/javascript">
